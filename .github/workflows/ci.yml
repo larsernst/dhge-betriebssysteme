@@ -1,0 +1,33 @@
+name: CI (typecheck, unit tests, build)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
+      - run: npm run typecheck
+
+      - run: npm run test:unit
+
+      - run: npm run build
+        env:
+          DATABASE_URL: "postgresql://nobody:nobody@localhost:5432/nobody?schema=public"
+          JWT_SECRET: "ci-build-secret-not-used-at-runtime-1234567890"

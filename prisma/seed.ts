@@ -17,6 +17,7 @@ async function main() {
         answer: q.answer,
         sourceRef: q.sourceRef,
         mcqOptions: q.mcqOptions ?? null,
+        confidence: q.confidence ?? null,
       },
       update: {
         chapter: q.chapter,
@@ -25,6 +26,7 @@ async function main() {
         answer: q.answer,
         sourceRef: q.sourceRef,
         mcqOptions: q.mcqOptions ?? null,
+        confidence: q.confidence ?? null,
       },
     });
   }

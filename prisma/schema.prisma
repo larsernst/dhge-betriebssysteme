@@ -28,6 +28,7 @@ model Question {
   answer       String
   sourceRef    String
   mcqOptions   Json?
+  confidence   String?
   createdAt    DateTime      @default(now())
   reviews      Review[]
   events       ReviewEvent[]

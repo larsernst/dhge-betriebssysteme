@@ -11,6 +11,7 @@ export interface CatalogQuestion {
   question: string;
   answer: string;
   sourceRef: string;
+  confidence?: "high" | "low";
   mcqOptions?: McqOption[];
 }
 
@@ -247,6 +248,7 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     answer:
       "Wird die Zeitscheibe zu klein gewählt, überwiegt der Verwaltungsaufwand für die häufigen Kontextwechsel die eigentliche Arbeit – die CPU-Leistung sinkt durch ständiges Umschalten. Ist sie zu groß, nähert sich das Verhalten dem Stapelbetrieb, sodass kurze Prozesse auf lange warten und die Antwortzeit steigt.",
     sourceRef: "_MConverter.eu_Betriebssysteme_Kapitel 3_gesamt.md",
+    confidence: "low",
   },
   {
     id: "2-prozesskontrollblock-zweck",
@@ -462,6 +464,7 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     answer:
       "Beispiel für Kernel-Level-Threads sind die Threads, die das Betriebssystem direkt verwaltet, etwa Linux-Threads über `clone()`/Pthreads, die der Kernel schedult. Beispiel für User-Level-Threads sind Bibliotheks-Threads, die der Prozess selbst verwaltet, z. B. alte POSIX-Threads-User-Thread-Bibliotheken oder Goroutinen-artige User-Threads, die ohne Kernelkenntnis über eine Threadbibliothek realisiert werden.",
     sourceRef: "_MConverter.eu_Betriebssysteme_Kapitel 3_gesamt.md",
+    confidence: "low",
   },
   {
     id: "2-threadkontrollblock-bestandteile",
@@ -816,6 +819,7 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     answer:
       "Typischerweise verfügen einfache oder ältere Systeme mit nur einstufigem Cache (oder nur L1/L2-Cache) sowie bestimmte Embedded- und Micro-Controller-Systeme nicht über einen L3-Cache, da der L3-Cache zur gemeinsamen Cache-Ebene mehrerer Prozessorkerne gehört und nur bei entsprechend höher entwickelten Mehrkernprozessoren vorgesehen ist.",
     sourceRef: "_MConverter.eu_Folien - Speicherverwaltung.md",
+    confidence: "low",
   },
   {
     id: "4-mmu-logisch-physisch",
@@ -1132,6 +1136,7 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     answer:
       "Authentifizierung weist eine Identität nach. Die drei klassischen Kategorien von Authentifizierungsfaktoren („Fragen“) sind: etwas, das man weiß (Passwörter/PINs), etwas, das man hat (Token, Smartcard, Sicherheitsschlüssel) und etwas, das man ist (biometrische Merkmale wie Fingerabdruck). Häufig kombiniert in der Zwei-Faktor-Authentifizierung.",
     sourceRef: "_MConverter.eu_Betriebssysteme_Kapitel 6 gesamt.md",
+    confidence: "low",
   },
   {
     id: "6-drei-sicherheitspolitiken",
@@ -1142,6 +1147,7 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     answer:
       "(1) Konfiguriertes Kommunikationsmodell: aktive Auseinandersetzung mit den Netzwerkteilnehmern, Unterscheidung in erlaubte/unerlaubte, Status durch die Sicherheitspolitik festgelegt – +hohe Kontrolle; −/hoher Konfigurations- und Pflegeaufwand. (2) Allgemeines (restriktives) Modell: nur erlaubte Teilnehmer/Protokolle sind zugelassen – +sehr sicher; −/unflexibel, Dienste werden blockiert. (3) Permissive (offene) Variante: alles erlaubt außer explizit Verbotenem – +einfach nutzbar; −/geringer Schutz, neue Angriffswege unbekannt.",
     sourceRef: "_MConverter.eu_Betriebssysteme_Kapitel 6 gesamt.md",
+    confidence: "low",
   },
   {
     id: "6-vier-firewall-aufgaben",

@@ -38,12 +38,13 @@ export default async function KatalogPage() {
 
   const questions = await prisma.question.findMany({
     orderBy: [{ chapter: "asc" }, { id: "asc" }],
-    select: {
+      select: {
       id: true,
       chapter: true,
       chapterTitle: true,
       question: true,
       mcqOptions: true,
+      confidence: true,
     },
   });
 
@@ -149,6 +150,11 @@ export default async function KatalogPage() {
                       </span>
                     </Link>
                     <span className={STATUS_CLASS[status]}>{STATUS_LABEL[status]}</span>
+                    {q.confidence === "low" && (
+                      <span className="badge badge--warn" title="Diese Antwort basiert auf duennem Vorlesungsskript und sollte nochmal geprueft werden.">
+                        prüfen
+                      </span>
+                    )}
                   </li>
                 );
               })}

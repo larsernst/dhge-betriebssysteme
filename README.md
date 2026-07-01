@@ -9,6 +9,8 @@
 ![Vitest](https://img.shields.io/badge/Vitest-2.0-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-1.45-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![CI](https://github.com/larsernst/dhge-betriebssysteme/actions/workflows/ci.yml/badge.svg)
+![Status](https://img.shields.io/badge/Status-Lern--Projekt-orange?style=for-the-badge)
 
 Eine TypeScript-/Next.js-Webanwendung zum Vorbereiten auf die Prüfung
 „Betriebssysteme – Grundlagen" (Fragenkatalog 2026, Dozent: Ing. Leonard Zeh).
