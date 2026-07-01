@@ -1,0 +1,16 @@
+# Standard: Repo-Dateien als Text mit LF (wo sinnvoll).
+* text=auto eol=lf
+
+# Shell- und Docker-Dateien zwingend mit LF (sonst bricht /bin/sh im Container).
+*.sh text eol=lf
+Dockerfile text eol=lf
+docker-entrypoint.sh text eol=lf
+
+# Windows-typische Dateien mit CRLF.
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binär.
+*.png binary
+*.jpg binary
+*.ico binary

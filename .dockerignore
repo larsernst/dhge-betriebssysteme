@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+resources
+*.md
+!DESIGN.md
+.env*
+tests
+playwright-report
+test-results
+coverage
+pgdata
+.vscode
+.idea

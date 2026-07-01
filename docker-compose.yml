@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lernapp
+      POSTGRES_PASSWORD: lernapp
+      POSTGRES_DB: lernapp
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lernapp -d lernapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://lernapp:lernapp@db:5432/lernapp?schema=public"
+      JWT_SECRET: "${JWT_SECRET:-please-change-me-to-a-long-random-secret}"
+      NEXTAUTH_SECRET: "${JWT_SECRET:-please-change-me-to-a-long-random-secret}"
+      NEXT_PUBLIC_APP_NAME: "BS Lern-App"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

@@ -1,0 +1,108 @@
+import { describe, expect, it } from "vitest";
+import {
+  applySm2,
+  clampEase,
+  gradeToQuality,
+  isDue,
+  nextIntervalDays,
+  SM2_DEFAULTS,
+  type Sm2UpdateInput,
+} from "@/lib/sm2";
+
+function initialState(): Sm2UpdateInput {
+  return {
+    easeFactor: SM2_DEFAULTS.easeFactor,
+    intervalDays: 0,
+    repetitions: 0,
+    lapses: 0,
+    dueAt: new Date(),
+    lastReviewedAt: null,
+  };
+}
+
+describe("clampEase", () => {
+  it("limits the ease factor to the configured floor", () => {
+    expect(clampEase(1.0)).toBe(SM2_DEFAULTS.easeFloor);
+    expect(clampEase(2.5)).toBe(2.5);
+  });
+});
+
+describe("gradeToQuality", () => {
+  it("maps the four UI grades to SM-2 quality values", () => {
+    expect(gradeToQuality("again")).toBe(1);
+    expect(gradeToQuality("hard")).toBe(3);
+    expect(gradeToQuality("good")).toBe(4);
+    expect(gradeToQuality("easy")).toBe(5);
+  });
+});
+
+describe("nextIntervalDays", () => {
+  it("follows the 1 / 6 / n*EF progression", () => {
+    const ef = 2.5;
+    expect(nextIntervalDays(1, 0, ef)).toBe(1);
+    expect(nextIntervalDays(2, 1, ef)).toBe(6);
+    expect(nextIntervalDays(3, 6, ef)).toBe(15);
+    expect(nextIntervalDays(4, 15, ef)).toBe(38);
+  });
+
+  it("returns 0 for repetitions before the first review", () => {
+    expect(nextIntervalDays(0, 0, 2.5)).toBe(0);
+  });
+});
+
+describe("applySm2", () => {
+  it("resets the card on 'again' and increases lapses", () => {
+    const before: Sm2UpdateInput = {
+      easeFactor: 2.6,
+      intervalDays: 30,
+      repetitions: 4,
+      lapses: 0,
+      dueAt: new Date(),
+      lastReviewedAt: null,
+    };
+    const after = applySm2(before, "again", new Date("2026-07-01T00:00:00Z"));
+    expect(after.repetitions).toBe(0);
+    expect(after.intervalDays).toBe(0);
+    expect(after.lapses).toBe(1);
+    // 'again' lowers the ease factor but never below the floor.
+    expect(after.easeFactor).toBeLessThan(before.easeFactor);
+    expect(after.easeFactor).toBeGreaterThanOrEqual(SM2_DEFAULTS.easeFloor);
+    // Due again today.
+    expect(after.dueAt.toISOString().slice(0, 10)).toBe("2026-07-01");
+  });
+
+  it("progresses 1 -> 6 -> ~15 days for 'good' on a new card", () => {
+    const now = new Date("2026-07-01T00:00:00Z");
+    let state = initialState();
+    state = applySm2(state, "good", now);
+    expect(state.repetitions).toBe(1);
+    expect(state.intervalDays).toBe(1);
+    expect(state.dueAt.toISOString().slice(0, 10)).toBe("2026-07-02");
+
+    state = applySm2(state, "good", now);
+    expect(state.repetitions).toBe(2);
+    expect(state.intervalDays).toBe(6);
+    expect(state.dueAt.toISOString().slice(0, 10)).toBe("2026-07-07");
+
+    state = applySm2(state, "good", now);
+    expect(state.repetitions).toBe(3);
+    expect(state.intervalDays).toBe(Math.round(6 * state.easeFactor));
+  });
+
+  it("raises the ease factor on 'easy' and lowers it on 'hard'", () => {
+    const base = 2.5;
+    const easyState = applySm2({ ...initialState(), easeFactor: base }, "easy");
+    const hardState = applySm2({ ...initialState(), easeFactor: base }, "hard");
+    expect(easyState.easeFactor).toBeGreaterThan(base);
+    expect(hardState.easeFactor).toBeLessThan(base);
+  });
+});
+
+describe("isDue", () => {
+  it("treats dueAt on or before today as due", () => {
+    const now = new Date("2026-07-01T15:00:00Z");
+    expect(isDue({ dueAt: new Date("2026-07-01T00:00:00Z") }, now)).toBe(true);
+    expect(isDue({ dueAt: new Date("2026-06-30T23:00:00Z") }, now)).toBe(true);
+    expect(isDue({ dueAt: new Date("2026-07-02T00:00:00Z") }, now)).toBe(false);
+  });
+});

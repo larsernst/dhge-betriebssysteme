@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  reviews      Review[]
+}
+
+model Question {
+  id           String   @id
+  chapter      Int
+  chapterTitle String
+  question     String
+  answer       String
+  sourceRef    String
+  createdAt    DateTime @default(now())
+  reviews      Review[]
+}
+
+model Review {
+  id              String   @id @default(cuid())
+  userId          String
+  questionId      String
+  user            User     @relation(fields: [userId], references: [id], onDelete:Cascade)
+  question        Question @relation(fields: [questionId], references: [id], onDelete:Cascade)
+  easeFactor      Float    @default(2.5)
+  intervalDays    Int      @default(0)
+  repetitions     Int      @default(0)
+  lapses          Int      @default(0)
+  dueAt           DateTime @default(now())
+  lastReviewedAt  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, questionId])
+  @@index([userId, dueAt])
+}
