@@ -12,16 +12,22 @@ function stripMcq(options: McqOption[]): { id: string; text: string }[] {
   return stripped;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Nicht angemeldet." }, { status: 401 });
   }
 
+  const url = new URL(request.url);
+  const difficultOnly = url.searchParams.get("deck") === "difficult";
   const now = new Date();
 
   const dueReviews = await prisma.review.findMany({
-    where: { userId: user.sub, dueAt: { lte: now } },
+    where: {
+      userId: user.sub,
+      dueAt: { lte: now },
+      ...(difficultOnly ? { lapses: { gte: 1 } } : {}),
+    },
     include: { question: true },
     orderBy: [{ lapses: "desc" }, { dueAt: "asc" }],
     take: 1,
@@ -32,7 +38,12 @@ export async function GET() {
     return NextResponse.json({
       review: serializeReview(r.question),
       isNew: false,
+      deck: difficultOnly ? "difficult" : "all",
     });
+  }
+
+  if (difficultOnly) {
+    return NextResponse.json({ review: null, isNew: false, deck: "difficult" });
   }
 
   const learnedQuestionIds = await prisma.review.findMany({
@@ -45,10 +56,10 @@ export async function GET() {
   const nextNew = allQuestions.find((q) => !learnedIds.has(q.id));
 
   if (!nextNew) {
-    return NextResponse.json({ review: null, isNew: false });
+    return NextResponse.json({ review: null, isNew: false, deck: "all" });
   }
 
-  return NextResponse.json({ review: serializeReview(nextNew), isNew: true });
+  return NextResponse.json({ review: serializeReview(nextNew), isNew: true, deck: "all" });
 }
 
 function serializeReview(question: {

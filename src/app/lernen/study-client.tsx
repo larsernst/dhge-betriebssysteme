@@ -10,7 +10,7 @@ type Feedback =
   | { kind: "mcq"; correct: boolean; correctIds: string[] | null; text: string }
   | null;
 
-export default function StudyClient() {
+export default function StudyClient({ deck = "all" }: { deck?: "all" | "difficult" }) {
   const [data, setData] = useState<ReviewNextResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [revealed, setRevealed] = useState(false);
@@ -27,7 +27,9 @@ export default function StudyClient() {
     setSelected([]);
     setFeedback(null);
     setError(null);
-    const res = await fetch("/api/review/next");
+    const url =
+      deck === "difficult" ? "/api/review/next?deck=difficult" : "/api/review/next";
+    const res = await fetch(url);
     setLoading(false);
     if (!res.ok) {
       setError("Karte konnte nicht geladen werden.");
@@ -131,12 +133,13 @@ export default function StudyClient() {
         <span className="badge badge--success">Alles fällige gelernt</span>
         <h2>Für heute erledigt!</h2>
         <p className="muted">
-          Du hast alle Fragen einmal gelernt oder bist mit den fälligen Wiederholungen durch.
-          Komm später wieder, um Spaced Repetition weiterlaufen zu lassen.
+          {deck === "difficult"
+            ? "Keine schwierigen Karten mehr fällig. Wechsle zu „Alle“, um neue oder andere fällige Karten zu lernen."
+            : "Du hast alle Fragen einmal gelernt oder bist mit den fälligen Wiederholungen durch. Komm später wieder, um Spaced Repetition weiterlaufen zu lassen."}
         </p>
         <div className="row">
           <button className="btn btn--secondary" onClick={loadNext}>
-            Nach weiteren neuen Fragen suchen
+            {deck === "difficult" ? "Erneut suchen" : "Nach weiteren neuen Fragen suchen"}
           </button>
           <Link href="/katalog" className="btn btn--ghost">
             Alle Fragen ansehen

@@ -97,6 +97,15 @@ export async function POST(request: Request) {
     },
   });
 
+  await prisma.reviewEvent.create({
+    data: {
+      userId: user.sub,
+      questionId,
+      grade: resolvedGrade,
+      mcqCorrect: mcqCorrect,
+    },
+  });
+
   return NextResponse.json({
     ok: true,
     review: updated,
