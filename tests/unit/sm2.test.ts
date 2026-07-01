@@ -4,6 +4,8 @@ import {
   clampEase,
   gradeToQuality,
   isDue,
+  isMcqCorrect,
+  mcqGrade,
   nextIntervalDays,
   SM2_DEFAULTS,
   type Sm2UpdateInput,
@@ -125,6 +127,53 @@ describe("isDue", () => {
   it("schedules a 'good' card into the future (not due now)", () => {
     const now = new Date("2026-07-01T15:00:00Z");
     const after = applySm2(initialState(), "good", now);
+    expect(after.dueAt.getTime()).toBeGreaterThan(now.getTime());
+    expect(isDue({ dueAt: after.dueAt }, now)).toBe(false);
+  });
+});
+
+describe("isMcqCorrect", () => {
+  const correct = ["a", "b", "c"];
+
+  it("returns true when the selection matches the correct set exactly", () => {
+    expect(isMcqCorrect(["a", "b", "c"], correct)).toBe(true);
+    expect(isMcqCorrect(["c", "a", "b"], correct)).toBe(true);
+  });
+
+  it("returns false on a missing correct option", () => {
+    expect(isMcqCorrect(["a", "b"], correct)).toBe(false);
+  });
+
+  it("returns false on an extra (wrong) option", () => {
+    expect(isMcqCorrect(["a", "b", "c", "x"], correct)).toBe(false);
+  });
+
+  it("returns false when a wrong option replaces a correct one", () => {
+    expect(isMcqCorrect(["a", "b", "x"], correct)).toBe(false);
+  });
+
+  it("returns false for an empty selection", () => {
+    expect(isMcqCorrect([], correct)).toBe(false);
+  });
+});
+
+describe("mcqGrade", () => {
+  it("maps a correct answer to 'good' and a wrong one to 'again'", () => {
+    expect(mcqGrade(true)).toBe("good");
+    expect(mcqGrade(false)).toBe("again");
+  });
+
+  it("an MCQ 'again' result makes the card due immediately", () => {
+    const now = new Date("2026-07-01T15:00:00Z");
+    const after = applySm2(initialState(), mcqGrade(false), now);
+    expect(after.dueAt.getTime()).toBe(now.getTime());
+    expect(isDue({ dueAt: after.dueAt }, now)).toBe(true);
+    expect(after.lapses).toBe(1);
+  });
+
+  it("an MCQ 'good' result schedules the card into the future", () => {
+    const now = new Date("2026-07-01T15:00:00Z");
+    const after = applySm2(initialState(), mcqGrade(true), now);
     expect(after.dueAt.getTime()).toBeGreaterThan(now.getTime());
     expect(isDue({ dueAt: after.dueAt }, now)).toBe(false);
   });

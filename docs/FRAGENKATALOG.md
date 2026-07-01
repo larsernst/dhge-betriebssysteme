@@ -50,6 +50,19 @@ Gesamtzahl liegt daher leicht über der Anzahl der rohen Katalog-Bullets.
 (Die Dateinamen der Vorlesung sind inkonsistent nummeriert – die Zuordnung
 erfolgt inhaltlich.)
 
+## Multiple-Choice
+
+Die 7 „Nennen Sie …"-Fragen (Listen-Aufgaben) werden als Multiple-Choice
+angezeigt: 2–4 richtige Optionen plus Distraktoren, gemischt. Die Auswertung
+erfolgt automatisch (richtig → `Good`, falsch → `Again`); die korrekten
+Optionen werden erst nach dem Auswerten vom Server zurückgegeben, sodass sie
+vorher nicht im Client stehen. Betroffene IDs:
+
+`2-drei-ipc-moeglichkeiten`, `2-thread-beispiele`,
+`2-threadkontrollblock-bestandteile`, `3-treiber-aufgaben`,
+`4-drei-aufgaben-speicherverwaltung`, `6-drei-malware-arten`,
+`6-vier-firewall-aufgaben`.
+
 ## Antworten ändern
 
 Antworten sind bewusst knapp gehalten (meist 1–4 Sätze). Um eine Antwort

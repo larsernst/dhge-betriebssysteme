@@ -11,6 +11,13 @@ export interface CatalogQuestion {
   question: string;
   answer: string;
   sourceRef: string;
+  mcqOptions?: McqOption[];
+}
+
+export interface McqOption {
+  id: string;
+  text: string;
+  correct: boolean;
 }
 
 export const FRAGENKATALOG: CatalogQuestion[] = [
@@ -303,6 +310,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-drei-ipc-moeglichkeiten",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-drei-ipc-moeglichkeiten-opt-1", text: "Kommunikation über Dateien", correct: true },
+      { id: "2-drei-ipc-moeglichkeiten-opt-2", text: "Kommunikation über Pipes", correct: true },
+      { id: "2-drei-ipc-moeglichkeiten-opt-3", text: "Synchronisation über Monitore/Mutexe", correct: true },
+      { id: "2-drei-ipc-moeglichkeiten-opt-4", text: "Kommunikation über den BIOS-Interrupt", correct: false },
+      { id: "2-drei-ipc-moeglichkeiten-opt-5", text: "Austausch über den DMA-Controller", correct: false },
+      { id: "2-drei-ipc-moeglichkeiten-opt-6", text: "Verständigung über den CPU-Cache", correct: false },
+    ],
     question: "Nennen Sie drei Möglichkeiten zur Interprozesskommunikation!",
     answer:
       "Drei IPC-Mechanismen sind: Kommunikation über Dateien (ältester Mechanismus, Zugriff über Sperren), Kommunikation über Pipes (gepufferter Halb-Duplex-Kanal mit Kernel-Synchronisation) sowie Kommunikation über Nachrichten/Signale bzw. Synchronisationsobjekte wie Mutex, Semaphore und Monitore.",
@@ -376,6 +391,13 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-thread-beispiele",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-thread-beispiele-opt-1", text: "Kernel-Threads: Linux-Pthreads (über clone())", correct: true },
+      { id: "2-thread-beispiele-opt-2", text: "User-Threads: POSIX-User-Thread-Bibliothek", correct: true },
+      { id: "2-thread-beispiele-opt-3", text: "Kernel-Threads: Windows-Notepad", correct: false },
+      { id: "2-thread-beispiele-opt-4", text: "User-Threads: Festplatten-Sektoren", correct: false },
+      { id: "2-thread-beispiele-opt-5", text: "Kernel-Threads: BIOS-POST", correct: false },
+    ],
     question: "Nennen Sie je ein Beispiel für Kernel- und User-Threads!",
     answer:
       "Beispiel für Kernel-Level-Threads sind die Threads, die das Betriebssystem direkt verwaltet, etwa Linux-Threads über `clone()`/Pthreads, die der Kernel schedult. Beispiel für User-Level-Threads sind Bibliotheks-Threads, die der Prozess selbst verwaltet, z. B. alte POSIX-Threads-User-Thread-Bibliotheken oder Goroutinen-artige User-Threads, die ohne Kernelkenntnis über eine Threadbibliothek realisiert werden.",
@@ -385,6 +407,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-threadkontrollblock-bestandteile",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-tcb-opt-1", text: "Threadkennung", correct: true },
+      { id: "2-tcb-opt-2", text: "Zustand (bereit/laufend/blockiert)", correct: true },
+      { id: "2-tcb-opt-3", text: "Gesicherter Registersatz/Prozessorstatus", correct: true },
+      { id: "2-tcb-opt-4", text: "Verweis auf den zugehörigen Prozess", correct: true },
+      { id: "2-tcb-opt-5", text: "E-Mail-Adresse des Nutzers", correct: false },
+      { id: "2-tcb-opt-6", text: "Quellcode der Bibliothek", correct: false },
+    ],
     question: "Nennen Sie die Bestandteile eines Threadkontrollblocks!",
     answer:
       "Der Threadkontrollblock hält pro Thread die Informationen, die der Scheduler benötigt: Threadkennung, Zustand (bereit/laufend/blockiert), gesicherter Registersatz/Prozessorstatus (insb. Befehlszähler und Stack-Pointer), Stack-Verwaltungsinformationen sowie Verweise auf den zugehörigen Prozess. er wird – je nach Threadmodell – auf System- oder Programmebene verwaltet.",
@@ -470,6 +500,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "3-treiber-aufgaben",
     chapter: 3,
     chapterTitle: "Ein- und Ausgabegeräte",
+    mcqOptions: [
+      { id: "3-treiber-aufgaben-opt-1", text: "Geräte eines Typs steuern", correct: true },
+      { id: "3-treiber-aufgaben-opt-2", text: "Einheitliche E/A-Schnittstelle bereitstellen", correct: true },
+      { id: "3-treiber-aufgaben-opt-3", text: "Ein-/Ausgabeanforderungspakete (IORP) verwalten", correct: true },
+      { id: "3-treiber-aufgaben-opt-4", text: "Benutzerpasswörter prüfen", correct: false },
+      { id: "3-treiber-aufgaben-opt-5", text: "Netzwerkrouting berechnen", correct: false },
+      { id: "3-treiber-aufgaben-opt-6", text: "Festplatten defragmentieren", correct: false },
+    ],
     question: "Nennen Sie drei Aufgaben eines Gerätetreibers!",
     answer:
       "Ein Gerätetreiber (1) ist ein Modul des Systemkerns, das ein oder mehrere Geräte desselben Typs kontrolliert, (2) stellt idealerweise eine einheitliche Schnittstelle für sämtliche E/A-Funktionen bereit (z. B. „write“ zum Schreiben in ein Gerät) und (3) verwaltet gerätespezifische Ein-/Ausgabeanforderungspakete (IORP) mit optimierten Verwaltungsalgorithmen; er behandelt zudem Sonderfälle wie das Hinzukommen oder Entfernen eines Geräts.",
@@ -538,6 +576,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-drei-aufgaben-speicherverwaltung",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-drei-aufgaben-sv-opt-1", text: "Speicher zuweisen und wieder freigeben", correct: true },
+      { id: "4-drei-aufgaben-sv-opt-2", text: "Belegte Speicherbereiche verfolgen", correct: true },
+      { id: "4-drei-aufgaben-sv-opt-3", text: "Auslagerung von Speicher auf Festplatte verwalten", correct: true },
+      { id: "4-drei-aufgaben-sv-opt-4", text: "Benutzeraccounts anlegen", correct: false },
+      { id: "4-drei-aufgaben-sv-opt-5", text: "Grafiktreiber rendern", correct: false },
+      { id: "4-drei-aufgaben-sv-opt-6", text: "CPU-Lüfterdrehzahl regeln", correct: false },
+    ],
     question: "Nennen Sie drei Aufgaben der Speicherverwaltung!",
     answer:
       "Die Speicherverwaltung (1) verwaltet die Speicherhierarchie und teilt Prozessen Speicher zu und gibt ihn frei, (2) verfolgt, welche Speicherbereiche gerade benutzt werden, und (3) verwaltet die Auslagerung von Speicher auf Festplatte sowie die Umwandlung logischer in physische Adressen (Memory Management Unit). Sie ist physischer und logischer Bestandteil des Prozessors.",
@@ -769,6 +815,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-drei-malware-arten",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-drei-malware-opt-1", text: "Virus", correct: true },
+      { id: "6-drei-malware-opt-2", text: "Wurm", correct: true },
+      { id: "6-drei-malware-opt-3", text: "Trojaner", correct: true },
+      { id: "6-drei-malware-opt-4", text: "Firewall", correct: false },
+      { id: "6-drei-malware-opt-5", text: "Compiler", correct: false },
+      { id: "6-drei-malware-opt-6", text: "Antivirenprogramm", correct: false },
+    ],
     question: "Nennen Sie drei Arten von Malware!",
     answer:
       "Drei Arten von Malware (Schadsoftware) sind: Viren (sich an Programmcode anhängende, sich replizierende Programme), Würmer (sich aktiv über Netzwerkverbindungen verbreitende Programme ohne Wirtdatei) und Trojaner (Software, die den eigentlichen schädlichen Inhalt verschleiert und im Hintergrund Schadsoftware ausführt). Weitere Beispiele sind Ransomware, Adware/Spyware.",
@@ -948,6 +1002,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-vier-firewall-aufgaben",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-vier-firewall-opt-1", text: "Unsicheres vom geschützten Netz trennen", correct: true },
+      { id: "6-vier-firewall-opt-2", text: "Zulässige Protokolle/Daten prüfen", correct: true },
+      { id: "6-vier-firewall-opt-3", text: "Dienste entkoppeln und Netzstruktur verbergen", correct: true },
+      { id: "6-vier-firewall-opt-4", text: "Sicherheitsereignisse protokollieren", correct: true },
+      { id: "6-vier-firewall-opt-5", text: "E-Mails verschlüsseln", correct: false },
+      { id: "6-vier-firewall-opt-6", text: "Festplatten spiegeln (RAID 1)", correct: false },
+    ],
     question: "Nennen Sie vier Aufgaben einer Firewall!",
     answer:
       "Vier Aufgaben einer Firewall sind: (1) Trennung des unsicheren vom zu schützenden Netz und Realisierung eines gesicherten Übergangs; (2) Prüfung, welche IT-Systeme/Nutzer/Daten/Protokolle über die Firewall kommunizieren dürfen (Netz-/Nutzer-/Datenebene); (3) Entkopplung von Diensten zur Vermeidung von Angriffen durch Implementierungsfehler (z. B. via VPN) und Verbergen der Netzstruktur; (4) Protokollierung sicherheitsrelevanter Ereignisse und Weiterleitung/Alarmierung an Sicherheitsmanagement und Anwender.",

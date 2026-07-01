@@ -27,12 +27,18 @@ Modellantworten, die aus den Vorlesungsfolien erstellt wurden, und nutzt
 - Alle 100 Prüfungsfragen über 6 Kapitel hinweg.
 - Freie Erinnerung: Frage lesen → selbst antworten → Musterantwort aufdecken →
   selbst bewerten (`Again / Hard / Good / Easy`).
-- SM-2 Spaced-Repetition-Algorithmus plant die nächste Fälligkeit je Karte.
-- Fortschritts-Dashboard: gelernt %, heute fällig, gefestigt, je-Kapitel-Statistik.
+- Multiple-Choice: „Nennen Sie …"-Fragen werden als Mehrfachauswahl
+  (auto-ausgewertet) angezeigt – richtig → `Good`, falsch → `Again`.
+- SM-2 Spaced-Repetition-Algorithmus plant die nächste Fälligkeit je Karte;
+  falsch bewertete Karten erscheinen am selben Tag erneut.
+- Fortschritts-Dashboard (`/fortschritt`): gelernt %, heute fällig, gefestigt,
+  je-Kapitel-Statistik.
+- Katalog-Uebersicht (`/katalog`): alle 100 Fragen mit Status, Intervalldauer,
+  Wiederholungs- und Fehlzählung sowie Aggregate-Statistik.
 - Atlassian-inspiriertes, reduziertes Design (Tokens aus `DESIGN.md`).
 - Komplett dockerisiert via `docker-compose.yml` (PostgreSQL + Next.js-App).
-- Unit-Tests (Vitest) für SM-2, Passwort-Hashing, Session-Tokens.
-- E2E-Tests (Playwright) für den Lernfluss.
+- Unit-Tests (Vitest) für SM-2, MCQ-Auswertung, Passwort-Hashing, Session-Tokens.
+- E2E-Tests (Playwright) für Lernfluss, Auth-Edge-Cases, MCQ und Katalog.
 
 ## Schnellstart mit Docker
 

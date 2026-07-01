@@ -29,9 +29,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <Link href="/fortschritt" className="navlink">
                     Fortschritt
                   </Link>
-                  <form action="/api/auth/logout" method="post" style={{ display: "inline" }}>
-                    <button type="submit" className="navlink">
-                      Abmelden ({user.name})
+                  <Link href="/katalog" className="navlink">
+                    Katalog
+                  </Link>
+                  <span className="nav-user">{user.name}</span>
+                  <form action="/api/auth/logout" method="post" className="nav-logout-form">
+                    <button type="submit" className="btn btn--secondary btn--sm">
+                      Abmelden
                     </button>
                   </form>
                 </>

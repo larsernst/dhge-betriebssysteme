@@ -16,6 +16,7 @@ async function main() {
         question: q.question,
         answer: q.answer,
         sourceRef: q.sourceRef,
+        mcqOptions: q.mcqOptions ?? null,
       },
       update: {
         chapter: q.chapter,
@@ -23,6 +24,7 @@ async function main() {
         question: q.question,
         answer: q.answer,
         sourceRef: q.sourceRef,
+        mcqOptions: q.mcqOptions ?? null,
       },
     });
   }

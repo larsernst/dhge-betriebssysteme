@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import type { McqOption } from "@/lib/types";
+
+function stripMcq(options: McqOption[]): { id: string; text: string }[] {
+  const stripped = options.map((o) => ({ id: o.id, text: o.text }));
+  for (let i = stripped.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [stripped[i], stripped[j]] = [stripped[j], stripped[i]];
+  }
+  return stripped;
+}
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -18,7 +28,11 @@ export async function GET() {
   });
 
   if (dueReviews.length > 0) {
-    return NextResponse.json({ review: dueReviews[0], isNew: false });
+    const r = dueReviews[0];
+    return NextResponse.json({
+      review: serializeReview(r.question),
+      isNew: false,
+    });
   }
 
   const learnedQuestionIds = await prisma.review.findMany({
@@ -34,5 +48,28 @@ export async function GET() {
     return NextResponse.json({ review: null, isNew: false });
   }
 
-  return NextResponse.json({ review: { question: nextNew }, isNew: true });
+  return NextResponse.json({ review: serializeReview(nextNew), isNew: true });
+}
+
+function serializeReview(question: {
+  id: string;
+  chapter: number;
+  chapterTitle: string;
+  question: string;
+  answer: string;
+  sourceRef: string;
+  mcqOptions: unknown;
+}) {
+  const mcq = Array.isArray(question.mcqOptions) ? (question.mcqOptions as McqOption[]) : null;
+  return {
+    question: {
+      id: question.id,
+      chapter: question.chapter,
+      chapterTitle: question.chapterTitle,
+      question: question.question,
+      answer: question.answer,
+      sourceRef: question.sourceRef,
+      mcqOptions: mcq ? stripMcq(mcq) : null,
+    },
+  };
 }

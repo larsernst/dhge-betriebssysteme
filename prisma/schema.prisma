@@ -25,6 +25,7 @@ model Question {
   question     String
   answer       String
   sourceRef    String
+  mcqOptions   Json?
   createdAt    DateTime @default(now())
   reviews      Review[]
 }

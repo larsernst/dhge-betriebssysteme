@@ -85,6 +85,20 @@ export function isDue(state: { dueAt: Date }, now: Date = new Date()): boolean {
   return state.dueAt.getTime() <= now.getTime();
 }
 
+export function isMcqCorrect(selected: string[], correctOptionIds: string[]): boolean {
+  const sel = new Set(selected);
+  const corr = new Set(correctOptionIds);
+  if (sel.size !== corr.size) return false;
+  for (const id of sel) {
+    if (!corr.has(id)) return false;
+  }
+  return true;
+}
+
+export function mcqGrade(correct: boolean): ReviewGrade {
+  return correct ? "good" : "again";
+}
+
 export function intervalLabel(intervalDays: number): string {
   if (intervalDays <= 0) return "heute";
   if (intervalDays === 1) return "morgen";
