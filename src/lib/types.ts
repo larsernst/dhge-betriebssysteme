@@ -9,6 +9,8 @@ export interface McqOptionPublic {
   text: string;
 }
 
+export type McqSelectionMode = "single" | "multi";
+
 export interface QuestionPublic {
   id: string;
   chapter: number;
@@ -17,6 +19,7 @@ export interface QuestionPublic {
   answer: string;
   sourceRef: string;
   mcqOptions: McqOptionPublic[] | null;
+  mcqSelectionMode: McqSelectionMode | null;
 }
 
 export interface ReviewNextResponse {

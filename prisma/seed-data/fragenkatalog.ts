@@ -26,6 +26,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "1-aufgaben-bs",
     chapter: 1,
     chapterTitle: "Einführung",
+    mcqOptions: [
+      { id: "1-aufgaben-bs-opt-1", text: "Abstraktion des Systems (technische Details verstecken)", correct: true },
+      { id: "1-aufgaben-bs-opt-2", text: "Dienste für Anwender und Anwendungsprogramme bereitstellen", correct: true },
+      { id: "1-aufgaben-bs-opt-3", text: "Verwaltung der Systemressourcen (Prozesse, Scheduling)", correct: true },
+      { id: "1-aufgaben-bs-opt-4", text: "Programmcode in Maschinensprache kompilieren", correct: false },
+      { id: "1-aufgaben-bs-opt-5", text: "Webseiten rendern und ausliefern", correct: false },
+      { id: "1-aufgaben-bs-opt-6", text: "Datenbanktabellen normalisieren", correct: false },
+    ],
     question: "Welche Aufgaben hat ein Betriebssystem?",
     answer:
       "Ein Betriebssystem abstrahiert das System (versteckt technische Details, automatisiert Vorgänge, ermöglicht einfache Bedienung), stellt Dienste für Anwender und Anwendungsprogramme (Programme laden, Prozesse erzeugen, E/A-Operationen, Interprozesskontrolle, Programmierschnittstellen) und verwaltet die Systemressourcen (Koordination und Steuerung von Prozessen, Scheduling, Schutz der systeminternen und verarbeiteten Informationen).",
@@ -44,6 +52,13 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "1-schichten-modell",
     chapter: 1,
     chapterTitle: "Einführung",
+    mcqOptions: [
+      { id: "1-schichten-opt-1", text: "Hardware (physisches System)", correct: true },
+      { id: "1-schichten-opt-2", text: "Betriebssystemkern (Treiber, Speicher-, Prozessverwaltung)", correct: true },
+      { id: "1-schichten-opt-3", text: "Anwendungsschicht (Programme, API, GUI)", correct: true },
+      { id: "1-schichten-opt-4", text: "Datenbankschicht (SQL-Engine)", correct: false },
+      { id: "1-schichten-opt-5", text: "Cloud-Ebene (Virtualisierungshypervisor)", correct: false },
+    ],
     question: "Welche Schichten beinhaltet das Schichten-Modell?",
     answer:
       "Das Schalen-/Schichtenmodell besteht mindestens aus der Hardware (physisches System), dem Betriebssystemkern (Treiber, Speicherverwaltung, Prozessverwaltung) und der Anwendungsschicht (Anwendungsprogramme, Programmierschnittstelle/API, grafische Oberfläche). Mit jeder Schicht wird die Hardware weiter veredelt.",
@@ -80,6 +95,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "1-traps-vs-interrupts",
     chapter: 1,
     chapterTitle: "Einführung",
+    mcqOptions: [
+      { id: "1-traps-opt-1", text: "Traps sind synchrone, durch das Programm selbst ausgelöste Ereignisse (Systemaufrufe, Ausnahmen)", correct: true },
+      { id: "1-traps-opt-2", text: "Traps sind immer fehlerhaft und führen zum Programmabbruch", correct: false },
+      { id: "1-traps-opt-3", text: "Interrupts werden vom laufenden Programm selbst geplant", correct: false },
+      { id: "1-traps-opt-4", text: "Interrupts werden vom Programm selbst durch fehlerhafte Operationen ausgelöst", correct: false },
+    ],
     question: "Was ist der Unterschied zwischen Traps und Interrupts?",
     answer:
       "Traps sind synchrone Ereignisse, die durch das laufende Programm selbst ausgelöst werden (z. B. Systemaufrufe oder Ausnahmen) und den Einsprung ins Betriebssystem im Systemmodus bewirken. Interrupts sind asynchrone Ereignisse, die von außen kommen (Hardware, Timer, E/A-Gerät) und den aktuellen Prozess unterbrechen, ohne vom Programmfluss abzuhängen.",
@@ -89,6 +110,14 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "1-nutzungskonzepte-abstraktion",
     chapter: 1,
     chapterTitle: "Einführung",
+    mcqOptions: [
+      { id: "1-nutzkonz-opt-1", text: "Prozess-Konzept", correct: true },
+      { id: "1-nutzkonz-opt-2", text: "Datei-Konzept", correct: true },
+      { id: "1-nutzkonz-opt-3", text: "Speicher-Konzept", correct: true },
+      { id: "1-nutzkonz-opt-4", text: "Netzwerk-Routing-Konzept", correct: false },
+      { id: "1-nutzkonz-opt-5", text: "Benutzeroberflächen-Konzept", correct: false },
+      { id: "1-nutzkonz-opt-6", text: "Compilierungs-Konzept", correct: false },
+    ],
     question:
       "Welche drei Nutzungskonzepte werden bei der Abstraktion von Systemen verfolgt?",
     answer:
@@ -119,6 +148,13 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-prozesszustaende",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-zust-opt-1", text: "Bereit (waiting for CPU)", correct: true },
+      { id: "2-zust-opt-2", text: "Laufend/Aktiv (currently executing)", correct: true },
+      { id: "2-zust-opt-3", text: "Blockiert/Wartend (waiting for event)", correct: true },
+      { id: "2-zust-opt-4", text: "Anonym (noch nicht zugewiesen)", correct: false },
+      { id: "2-zust-opt-5", text: "Virtualisiert (in einer VM ausgeführt)", correct: false },
+    ],
     question: "Welche Zustände kann ein Prozess einnehmen?",
     answer:
       "Ein Prozess hat stets einen festgelegten Zustand. Das erweiterte Prozessmodell unterscheidet u. a. die Zustände „bereit“, „laufend/aktiv“, „blockiert/wartend“ sowie (je nach Modell) „erzeugt“ und „terminiert“. Zustandsübergänge erfolgen durch Kontextwechsel (Zustandsübergänge).",
@@ -182,6 +218,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-koop-vs-praemp-scheduling",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-koop-opt-1", text: "Beim präemptiven Scheduling unterbricht ein Timer-Signal den laufenden Prozess (erzwungene CPU-Abgabe)", correct: true },
+      { id: "2-koop-opt-2", text: "Beim kooperativen Scheduling entscheidet der Scheduler, wann ein Prozess die CPU abgibt", correct: false },
+      { id: "2-koop-opt-3", text: "Präemptives Scheduling kann nur auf Mehrprozessorsystemen eingesetzt werden", correct: false },
+      { id: "2-koop-opt-4", text: "Beide Verfahren sind identisch – der Unterschied ist historisch", correct: false },
+    ],
     question:
       "Was unterscheidet kooperative und verdrängende Scheduling-Verfahren?",
     answer:
@@ -237,6 +279,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-echte-parallelitaet",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-par-opt-1", text: "Echte Parallelität ist nur auf Mehrprozessorsystemen mit mehreren physischen CPUs möglich", correct: true },
+      { id: "2-par-opt-2", text: "Echte Parallelität liegt vor, wenn ein Programm zwei Threads im selben Prozess verwendet", correct: false },
+      { id: "2-par-opt-3", text: "Auf einem Einzelprozessorsystem kann echte Parallelität durch präemptives Scheduling erreicht werden", correct: false },
+      { id: "2-par-opt-4", text: "Echte Parallelität entsteht automatisch durch Compiler-Optimierungen", correct: false },
+    ],
     question: "Was zeichnet echte Parallelität aus?",
     answer:
       "Echte Parallelität ist nur auf Mehrprozessorsystemen möglich: zwei Aktivitäten werden gleichzeitig und kausal unabhängig voneinander auf verschiedenen Prozessoren ausgeführt. Auf einem Einprozessorsystem gibt es hingegen nur simulierte („pseudo“) Parallelität, bei der jeder Prozess nur begrenzte CPU-Zeit erhält.",
@@ -274,6 +322,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-sync-vs-async-kommunikation",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-sync-opt-1", text: "Synchrone Kommunikation blockiert bei Abbruch der Übertragung; sie ist Standard bei Unix-Systemen", correct: true },
+      { id: "2-sync-opt-2", text: "Asynchrone Kommunikation arbeitet immer ohne Pufferspeicher", correct: false },
+      { id: "2-sync-opt-3", text: "Asynchrone Kommunikation ist sicherer, weil der Empfänger eine Empfangsbestätigung schicken muss", correct: false },
+      { id: "2-sync-opt-4", text: "Synchrone Kommunikation erfordert einen Puffer und verwendet implizite Empfangsbestätigungen", correct: false },
+    ],
     question: "Was unterscheidet synchrone und asynchrone Kommunikation?",
     answer:
       "Synchrone Kommunikation liefert die Information direkt und ohne Pufferung, mit impliziter Empfangsbestätigung, und blockiert bei Abbruch der Übertragung; sie ist einfacher zu programmieren und Standard bei Unix-Systemen. Asynchrone Kommunikation muss Nachrichten zwischenspeichern, hat keine sichere Empfangsbestätigung und erzeugt bei Kommunikationsabbruch keine Blockade beim Empfänger.",
@@ -301,6 +355,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "2-signal-vs-nachricht",
     chapter: 2,
     chapterTitle: "Prozesse und Threads",
+    mcqOptions: [
+      { id: "2-signal-opt-1", text: "Ein Signal trägt nur die Information 'etwas ist passiert', eine Nachricht enthält Datenelemente", correct: true },
+      { id: "2-signal-opt-2", text: "Signale sind immer länger als Nachrichten und enthalten Nutzdaten", correct: false },
+      { id: "2-signal-opt-3", text: "Nachrichten und Signale sind synonyme Begriffe in der IPC", correct: false },
+      { id: "2-signal-opt-4", text: "Signale werden ausschließlich über Pipes übertragen", correct: false },
+    ],
     question: "Was unterscheidet ein Signal von einer Nachricht?",
     answer:
       "Ein Signal ist ein kurzes, asynchrones Ereignissignal an einen Prozess (z. B. „unterbrechen“), das nur die Information „etwas ist passiert“ trägt. Eine Nachricht ist ein Datenelement mit Inhalt, das zwischen Prozessen über einen IPC-Mechanismus ausgetauscht wird und mehrere Bytes/Pakete umfassen kann.",
@@ -480,6 +540,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "3-polling-vs-interrupt",
     chapter: 3,
     chapterTitle: "Ein- und Ausgabegeräte",
+    mcqOptions: [
+      { id: "3-poll-opt-1", text: "Beim Polling fragt der Rechner zyklisch das BUSY-Bit des Controllers ab", correct: true },
+      { id: "3-poll-opt-2", text: "Polling ist effizienter als Interrupts, weil es keine ISR benötigt", correct: false },
+      { id: "3-poll-opt-3", text: "Bei Interrupts fragt der Rechner genauso zyklisch ab; der Unterschied liegt nur im verwendeten Bus-System", correct: false },
+      { id: "3-poll-opt-4", text: "Interrupts sind ein anderer Name für die Polling-Methode", correct: false },
+    ],
     question:
       "Was ist der Unterschied zwischen Polling und Interrupt-Steuerung?",
     answer:
@@ -548,6 +614,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-cache-vs-hauptspeicher",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-cache-opt-1", text: "Der Cache ist ein sehr schneller Zwischenspeicher zwischen CPU und Hauptspeicher für häufig genutzte Daten", correct: true },
+      { id: "4-cache-opt-2", text: "Der Hauptspeicher ist schneller als der Cache, hat aber eine geringere Kapazität", correct: false },
+      { id: "4-cache-opt-3", text: "Cache und Hauptspeicher sind identisch – der Cache ist lediglich eine ältere Bezeichnung", correct: false },
+      { id: "4-cache-opt-4", text: "Der Hauptspeicher ist der Zwischenspeicher, der Cache dient als dauerhafter Langzeitspeicher", correct: false },
+    ],
     question: "Was unterscheidet Cache-Speicher vom Hauptspeicher?",
     answer:
       "Der Cache ist ein temporärer, sehr schneller Zwischenspeicher zwischen CPU und Hauptspeicher/Festplatten, der häufig verwendete Daten puffert, um Zugriffszeit und Leistung zu verbessern. Der Hauptspeicher (RAM) ist der Arbeitsspeicher mit wahlfreiem Zugriff über die direkte Speicheradresse, größer und etwas langsamer als der Cache, aber Hauptspeicher für ausführbare Programme.",
@@ -557,6 +629,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-ram-rom",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-ramrom-opt-1", text: "RAM (Random Access Memory) ist der flüchtige Arbeitsspeicher mit wahlfreiem Zugriff", correct: true },
+      { id: "4-ramrom-opt-2", text: "ROM (Read Only Memory) ist ein dauerhafter Speicher ohne Schreibzugriff, mechanisch austauschbar", correct: true },
+      { id: "4-ramrom-opt-3", text: "RAM ist nicht-flüchtig und dient ausschließlich als Cache der CPU", correct: false },
+      { id: "4-ramrom-opt-4", text: "ROM ist ein anderer Name für den Arbeitsspeicher des Computers", correct: false },
+    ],
     question: "Was bedeuten die Abkürzungen RAM- und ROM-Speicher?",
     answer:
       "RAM (Random Access Memory) ist der Arbeitsspeicher/Hauptspeicher mit wahlfreiem Zugriff über die direkte Speicheradresse, temporär und flüchtig. ROM (Read Only Memory) ist ein dauerhafter Speicher ohne Schreibzugriff, mechanisch austauschbar, der feste Inhalte (z. B. Firmware) dauerhaft bereithält.",
@@ -630,6 +708,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-hdd-defragmentieren",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-hdd-opt-1", text: "HDD-Festplatten werden defragmentiert, um verstreute belegte Bereiche zusammenzuführen und Zugriffszeiten zu reduzieren", correct: true },
+      { id: "4-hdd-opt-2", text: "Eine Defragmentierung erhöht die Gesamtkapazität der Festplatte", correct: false },
+      { id: "4-hdd-opt-3", text: "HDDs müssen defragmentiert werden, damit das BS den Lesekopf kalibrieren kann", correct: false },
+      { id: "4-hdd-opt-4", text: "Defragmentierung ist nur bei SSDs sinnvoll, bei HDDs entsteht keine Fragmentierung", correct: false },
+    ],
     question: "Warum werden HDD-Festplatten defragmentiert?",
     answer:
       "HDD-Festplatten sind magnetbasierend und werden über einen Schreib-/Lesekopf adressiert. Durch Belegung und Freigabe entstehen Lücken; die Defragmentierung schiebt belegte Bereiche zusammen (Speicherkompaktierung), um aus vielen kleinen eine große freie Lücke zu erhalten und Zugriffszeiten zu reduzieren. Sie dient der Rückgewinnung und Reorganisation von Speicherplatz.",
@@ -639,6 +723,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-flash-nicht-defragmentieren",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-flash-opt-1", text: "Flash-Speicher haben eine blockweise Struktur ohne Lesekopf – die physische Lage der Blöcke ist irrelevant", correct: true },
+      { id: "4-flash-opt-2", text: "Eine Defragmentierung erhöht dauerhaft die Schreib- und Lesegeschwindigkeit von SSDs", correct: false },
+      { id: "4-flash-opt-3", text: "SSDs müssen regelmäßig defragmentiert werden, um die Datenrate zu erhöhen", correct: false },
+      { id: "4-flash-opt-4", text: "SSDs werden genauso wie HDDs defragmentiert; es gibt keinen Unterschied", correct: false },
+    ],
     question: "Warum sollten Flash-Speichermedien nicht defragmentiert werden?",
     answer:
       "SSDs/Flash-Speicher haben eine blockweise Datenstruktur ohne Lesekopf; die physische Lage der Blöcke ist nicht relevant. Eine Defragmentierung bringt keinen Zugriffsvorteil, verbraucht aber unnötig Lese- und Schreibzyklen und verkürzt damit die Lebensdauer der SSD.",
@@ -668,6 +758,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "4-interne-fragmentierung-stelle",
     chapter: 4,
     chapterTitle: "Speicherverwaltung",
+    mcqOptions: [
+      { id: "4-intfrag-opt-1", text: "Interne Fragmentierung entsteht innerhalb fester Partitionen, wenn die Partition größer als der Bedarf des Prozesses ist", correct: true },
+      { id: "4-intfrag-opt-2", text: "Sie tritt bei dynamischer Partitionierung auf, wenn viele kleine Lücken zwischen belegten Bereichen entstehen", correct: false },
+      { id: "4-intfrag-opt-3", text: "Interne Fragmentierung entsteht nur auf HDD-Festplatten, nicht im Hauptspeicher", correct: false },
+      { id: "4-intfrag-opt-4", text: "Sie wird durch Paging vollständig verhindert", correct: false },
+    ],
     question: "An welcher Stelle findet interne Fragmentierung statt?",
     answer:
       "Interne Fragmentierung entsteht innerhalb einer festen Partition, die einem Prozess zugewiesen ist: ist die Partition größer als der Bedarf des Prozesses, bleibt der ungenutzte Speicherplatz innerhalb der Partition verloren, bis der Speicher neu verteilt wird. Sie tritt also bei der direkten Speicherverwaltung mit festen Partitionen auf.",
@@ -747,6 +843,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "5-raid0-nicht-echt",
     chapter: 5,
     chapterTitle: "Datensicherung",
+    mcqOptions: [
+      { id: "5-raid0-opt-1", text: "RAID 0 bietet keine Redundanz; es verteilt Daten nur zur Steigerung der Transferrate – fällt eine Platte aus, sind alle Daten verloren", correct: true },
+      { id: "5-raid0-opt-2", text: "RAID 0 speichert alle Daten doppelt, sodass eine defekte Platte kein Problem darstellt", correct: false },
+      { id: "5-raid0-opt-3", text: "RAID 0 ist kein echtes RAID, weil es mindestens 5 Festplatten benötigt", correct: false },
+      { id: "5-raid0-opt-4", text: "RAID 0 verwendet Paritätsinformationen, um Daten beim Ausfall einer Platte wiederherzustellen", correct: false },
+    ],
     question: "Warum ist RAID 0 kein „richtiges“ RAID-System?",
     answer:
       "RAID 0 bietet keine Redundanz: Die Festplatten werden in zusammenhängende Blöcke gleicher Größe aufgeteilt, und Daten werden verteilt – Ziel ist ausschließlich die Steigerung der Datentransferrate durch parallele Zugriffe. Da kein „R“ (Redundant) vorliegt, fallen bei Ausfall einer Platte alle Daten aus und können nicht rekonstruiert werden; es eignet sich also nur, wenn Datensicherheit unwichtig ist oder eine zusätzliche Sicherung existiert.",
@@ -775,6 +877,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "5-file-vs-block-level",
     chapter: 5,
     chapterTitle: "Datensicherung",
+    mcqOptions: [
+      { id: "5-file-opt-1", text: "File-Level-Backup sichert vollständige Dateien; Block-Level sichert nur geänderte Datenblöcke einer Datei", correct: true },
+      { id: "5-file-opt-2", text: "Block-Level-Backup ist langsamer als File-Level-Backup, weil es ganze Dateien kopiert", correct: false },
+      { id: "5-file-opt-3", text: "File-Level und Block-Level sind identische Verfahren mit unterschiedlichen Namen", correct: false },
+      { id: "5-file-opt-4", text: "Block-Level erlaubt die Wiederherstellung einzelner Dateien einfacher als File-Level", correct: false },
+    ],
     question:
       "Was unterscheidet File-Level-Backup und Block-Level-Backup?",
     answer:
@@ -832,6 +940,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-wuermer-verbreitung",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-wurm-opt-1", text: "Würmer verbreiten sich aktiv über Netzwerkverbindungen (Kopieren/Ausführen) und benötigen keine Wirtdateien", correct: true },
+      { id: "6-wurm-opt-2", text: "Ein Wurm muss sich wie ein Virus an eine ausführbare Datei anhängen, um sich zu verbreiten", correct: false },
+      { id: "6-wurm-opt-3", text: "Würmer verbreiten sich ausschließlich über USB-Sticks und Wechselmedien", correct: false },
+      { id: "6-wurm-opt-4", text: "Würmer sind eine veraltete Bezeichnung für moderne Viren", correct: false },
+    ],
     question: "Wie verbreiten sich Computerwürmer?",
     answer:
       "Würmer verbreiten sich aktiv über Netzwerkverbindungen (Kopieren und Ausführen), nutzen Hilfsprogramme wie E-Mail-Programme mit, benötigen keine Wirtdateien (im Gegensatz zu Viren) und können sich auch über Wechselmedien ausbreiten. Sie nutzen Sicherheitslücken auf Zielsystemen aus und existieren als aktives schadhaftes Programm auf dem Zielsystem.",
@@ -841,6 +955,13 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-virus-phasen",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-virus-opt-1", text: "Infektion (Anhängen an Wirtprogramm und Ausführen)", correct: true },
+      { id: "6-virus-opt-2", text: "Replikation (Virusreproduktion durch infizierte Programme)", correct: true },
+      { id: "6-virus-opt-3", text: "Schadensphase (zeit- oder eventgesteuerter Auslöser)", correct: true },
+      { id: "6-virus-opt-4", text: "Defragmentierung (Bereinigung der infizierten Dateien)", correct: false },
+      { id: "6-virus-opt-5", text: "Authentifizierung (Erzwingen einer Benutzeranmeldung)", correct: false },
+    ],
     question: "Welche Phasen durchläuft ein Virus?",
     answer:
       "Ein Virus wird an Programmcode angehängt und bei Ausführung aktiv. Es durchläuft: Infektion (Anhängen an ein Wirtprogramm und Ausführen des infizierten Programms), Replikation (Virusreproduktion durch infizierte Programme) und Schadensphase (Auslöser zeitgesteuert oder eventgesteuert; Schaden betrifft Software und indirekt Hardware).",
@@ -870,6 +991,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-phishing-ziele",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-phish-opt-1", text: "Persönliche Daten und Login-Informationen – oft der erste Schritt zur Übernahme einer fremden Identität", correct: true },
+      { id: "6-phish-opt-2", text: "Die Festplattengröße und Prozessortaktung des Opfers auszulesen", correct: false },
+      { id: "6-phish-opt-3", text: "Malware direkt auf dem Zielsystem zu installieren, ohne vorher Daten zu sammeln", correct: false },
+      { id: "6-phish-opt-4", text: "Netzwerkverbindungen zu verschlüsseln, um sie gegen Abhören zu schützen", correct: false },
+    ],
     question: "Worauf zielen Phishing-Angriffe ab?",
     answer:
       "Phishing (von „Angeln“) ahmt vertrauenswürdige Internetseiten/Oberflächen nach und zielt auf persönliche Daten und Login-Informationen. Es ist oft der erste Schritt bei Cyberkriminalität zur Übernahme einer fremden Identität; die Idee ist so alt wie die Telefonie.",
@@ -934,6 +1061,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-transparente-firewall",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-transp-opt-1", text: "Transparent bedeutet, die Firewall ist für Nutzer und Netzwerkteilnehmer unsichtbar und benötigt keine aktive Einwirkung", correct: true },
+      { id: "6-transp-opt-2", text: "Transparent bedeutet, die Firewall-Regeln sind für alle Netzwerkteilnehmer einsehbar", correct: false },
+      { id: "6-transp-opt-3", text: "Transparent heißt, dass die Firewall ausschließlich aus Glasfaserkomponenten besteht", correct: false },
+      { id: "6-transp-opt-4", text: "Eine transparente Firewall filtert ausschließlich auf der Anwendungsebene", correct: false },
+    ],
     question:
       "Was bedeutet „transparente Arbeitsweise“ im Bezug auf eine Firewall?",
     answer:
@@ -944,6 +1077,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-safety-vs-security",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-safety-opt-1", text: "Security schützt vor unautorisiertem Eindringen; Safety meint Betriebssicherheit (fehlerfreies Verhalten gemäß Spezifikation)", correct: true },
+      { id: "6-safety-opt-2", text: "Safety und Security sind synonyme Begriffe für den Schutz vor Malware", correct: false },
+      { id: "6-safety-opt-3", text: "Safety ist der Schutz vor Viren, Security der Schutz vor Trojanern", correct: false },
+      { id: "6-safety-opt-4", text: "Security bedeutet Betriebssicherheit, Safety ist Angriffsabwehr", correct: false },
+    ],
     question:
       "Welche Unterscheidung können Sie zwischen Safety und Security treffen?",
     answer:
@@ -973,6 +1112,12 @@ export const FRAGENKATALOG: CatalogQuestion[] = [
     id: "6-bell-lapadula-prinzip",
     chapter: 6,
     chapterTitle: "Sicherheit in Betriebssystemen",
+    mcqOptions: [
+      { id: "6-blp-opt-1", text: "Das BLP-Modell sichert Vertraulichkeit durch Sicherheitsstufen für Dokumente und Benutzer (No Read Up, No Write Down)", correct: true },
+      { id: "6-blp-opt-2", text: "Das Bell-Lapadula-Modell dient ausschließlich dem Schutz vor Malware in Betriebssystemen", correct: false },
+      { id: "6-blp-opt-3", text: "BLP regelt den Zugriff auf CPU-Ressourcen zwischen Prozessen", correct: false },
+      { id: "6-blp-opt-4", text: "Das Modell ist ein Firewall-Designkonzept für die Netzwerkschicht", correct: false },
+    ],
     question: "Nach welchem Prinzip arbeitet das Bell-Lapadula-Modell?",
     answer:
       "Das Bell-Lapadula-Modell (BLP) sichert die Vertraulichkeit: Es vergibt Sicherheitsstufen für Dokumente/Programme (nicht klassifiziert, vertraulich, geheim, streng geheim etc.) und entsprechende Stufen für Benutzer; der Ersteller setzt die Stufe. Der Informationsfluss wird so geregelt, dass kein unerlaubter Zugriff stattfindet („No Read Up, No Write Down“). Das BS muss die Stufe mit dem Benutzer verbinden und an Kinderprozesse weitergeben – mit viel Verwaltungsaufwand.",

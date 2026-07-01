@@ -173,13 +173,17 @@ export default function StudyClient({ deck = "all" }: { deck?: "all" | "difficul
       {isMcq ? (
         <McqQuestion
           options={q.mcqOptions!}
+          selectionMode={q.mcqSelectionMode ?? "multi"}
           selected={selected}
           disabled={submitting || revealed}
           correctIds={correctIds}
-          onToggle={(id) =>
-            setSelected((prev) =>
-              prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-            )
+          onToggle={
+            q.mcqSelectionMode === "single"
+              ? (id) => setSelected([id])
+              : (id) =>
+                  setSelected((prev) =>
+                    prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+                  )
           }
           onSubmit={submitMcq}
           revealed={revealed}
@@ -291,6 +295,7 @@ function RecallQuestion(props: {
 
 function McqQuestion(props: {
   options: { id: string; text: string }[];
+  selectionMode: "single" | "multi";
   selected: string[];
   disabled: boolean;
   correctIds: string[] | null;
@@ -298,11 +303,15 @@ function McqQuestion(props: {
   onToggle: (id: string) => void;
   onSubmit: () => void;
 }) {
+  const isSingle = props.selectionMode === "single";
   const selectionCount = props.selected.length;
+  const inputType = isSingle ? "radio" : "checkbox";
   return (
     <>
       <p className="muted" style={{ fontSize: 14 }}>
-        Mehrere Antworten sind richtig. Wähle alle zutreffenden aus.
+        {isSingle
+          ? "Wähle die richtige Antwort."
+          : "Mehrere Antworten sind richtig. Wähle alle zutreffenden aus."}
       </p>
       <div className="stack">
         {props.options.map((o) => {
@@ -318,7 +327,8 @@ function McqQuestion(props: {
           return (
             <label key={o.id} className={cls}>
               <input
-                type="checkbox"
+                type={inputType}
+                name={isSingle ? "mcq-single" : undefined}
                 checked={checked}
                 disabled={props.disabled}
                 onChange={() => props.onToggle(o.id)}

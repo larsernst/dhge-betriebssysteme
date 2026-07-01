@@ -39,6 +39,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     Katalog
                   </Link>
                   <span className="nav-user">{user.name}</span>
+                  <Link href="/einstellungen" className="navlink" title="Einstellungen">
+                    Einstell.
+                  </Link>
                   <form action="/api/auth/logout" method="post" className="nav-logout-form">
                     <button type="submit" className="btn btn--secondary btn--sm">
                       Abmelden

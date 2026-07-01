@@ -13,6 +13,12 @@ export async function GET(request: Request) {
   const difficultOnly = url.searchParams.get("deck") === "difficult";
   const now = new Date();
 
+  const me = await prisma.user.findUnique({
+    where: { id: user.sub },
+    select: { mcqEnabled: true },
+  });
+  const mcqEnabled = me?.mcqEnabled ?? true;
+
   const dueReviews = await prisma.review.findMany({
     where: {
       userId: user.sub,
@@ -26,7 +32,7 @@ export async function GET(request: Request) {
 
   if (dueReviews.length > 0) {
     return NextResponse.json({
-      review: { question: serializeQuestion(dueReviews[0].question) },
+      review: { question: serializeQuestion(dueReviews[0].question, mcqEnabled) },
       isNew: false,
       deck: difficultOnly ? "difficult" : "all",
     });
@@ -50,7 +56,7 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({
-    review: { question: serializeQuestion(nextNew) },
+    review: { question: serializeQuestion(nextNew, mcqEnabled) },
     isNew: true,
     deck: "all",
   });

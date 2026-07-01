@@ -14,11 +14,17 @@ export async function GET(request: Request) {
   const countRaw = Number(url.searchParams.get("count") ?? "30");
   const count = Number.isFinite(countRaw) && countRaw > 0 ? countRaw : 30;
 
+  const me = await prisma.user.findUnique({
+    where: { id: user.sub },
+    select: { mcqEnabled: true },
+  });
+  const mcqEnabled = me?.mcqEnabled ?? true;
+
   const all = await prisma.question.findMany();
   const picked = selectExamQuestions(all, count);
 
   return NextResponse.json({
-    questions: picked.map(serializeQuestion),
+    questions: picked.map((q) => serializeQuestion(q, mcqEnabled)),
     total: all.length,
   });
 }

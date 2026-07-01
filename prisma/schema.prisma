@@ -13,6 +13,7 @@ model User {
   email        String        @unique
   name         String
   passwordHash String
+  mcqEnabled   Boolean       @default(true)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   reviews      Review[]

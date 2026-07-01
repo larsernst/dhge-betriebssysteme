@@ -108,3 +108,51 @@ test.describe("Katalog-Uebersicht", () => {
     await page.waitForURL("**/login");
   });
 });
+
+test.describe("MCQ-Toggle (Einstellungen)", () => {
+  test("Ausschalten von MCQ liefert nur Freie-Erinnerungs-Fragen", async ({ page, request }) => {
+    const email = unique("mcoff");
+    await request.post("/api/auth/register", {
+      data: { name: "MCOff", email, password: "testpass1234" },
+    });
+
+    await page.goto("/login");
+    await page.getByLabel("E-Mail").fill(email);
+    await page.getByLabel(/^Passwort$/).fill("testpass1234");
+    await page.getByRole("button", { name: "Anmelden" }).click();
+    await page.waitForURL("**/lernen");
+
+    // Eine Bewertung vornehmen, damit die erste Karte durch ist.
+    // Dann MCQ ausschalten -> naechste Karte (falls MCQ-Frage) sollte als Recall erscheinen.
+    const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
+    const auswerten = page.getByRole("button", { name: "Auswerten" });
+    if (await reveal.isVisible().catch(() => false)) {
+      await reveal.click();
+      await page.getByRole("button", { name: "Good" }).click();
+      await page.waitForTimeout(1100);
+    } else if (await auswerten.isVisible().catch(() => false)) {
+      await page.locator(".mcq-option input[type=checkbox]").first().check();
+      await auswerten.click();
+      await page.waitForTimeout(1700);
+    }
+
+    // MCQ ausschalten
+    await page.goto("/einstellungen");
+    await expect(page.getByText("Multiple-Choice-Aufgaben")).toBeVisible();
+    await page.locator(".switch input").uncheck();
+    await expect(page.getByText("Gespeichert")).toBeVisible();
+
+    // Wieder auf /lernen – die naechste Frage sollte NIE ein "Auswerten"-Button zeigen
+    await page.goto("/lernen");
+    const auswertenAfter = page.getByRole("button", { name: "Auswerten" });
+    const revealAfter = page.getByRole("button", { name: "Musterantwort zeigen" });
+    // Mindestens eine Karte laedt – es darf kein Auswerten-Button da sein
+    await expect(async () => {
+      const a = await auswertenAfter.isVisible().catch(() => false);
+      const r = await revealAfter.isVisible().catch(() => false);
+      const done = await page.getByRole("heading", { name: /erledigt/ }).isVisible().catch(() => false);
+      expect(a || r || done).toBeTruthy();
+      expect(a).toBe(false);
+    }).toPass();
+  });
+});

@@ -411,6 +411,48 @@ button {
   background: var(--ds-background-brand-bold);
 }
 
+/* Toggle switch */
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch__track {
+  display: inline-flex;
+  align-items: center;
+  width: 48px;
+  height: 26px;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-surface-pressed);
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0 2px;
+}
+
+.switch input:checked + .switch__track {
+  background: var(--ds-background-brand-bold);
+}
+
+.switch__thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ds-background-canvas);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.switch input:checked + .switch__track .switch__thumb {
+  transform: translateX(22px);
+}
+
+.switch input:disabled + .switch__track {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Tabs (chapter pills) */
 .tabs {
   display: flex;
