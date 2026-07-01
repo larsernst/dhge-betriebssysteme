@@ -23,6 +23,9 @@ next-env.d.ts
 # PostgreSQL data (local dev volume)
 pgdata/
 
+# DB-Backups (nicht einchecken)
+backups/
+
 # Test artifacts
 coverage/
 playwright-report/

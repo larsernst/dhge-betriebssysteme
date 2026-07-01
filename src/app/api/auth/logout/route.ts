@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { getSessionCookieOptions } from "@/lib/session";
+import { requireSameOrigin } from "@/lib/origin";
 
 export async function POST(request: Request) {
+  const originCheck = requireSameOrigin(request);
+  if (!originCheck.ok) {
+    return NextResponse.json(
+      { error: "Verboten: " + (originCheck.reason ?? "Ursprung nicht erlaubt") },
+      { status: 403 }
+    );
+  }
   const { name, value, ...options } = getSessionCookieOptions("", 0);
   const res = NextResponse.redirect(new URL("/", request.url));
   res.cookies.set(name, value, options);

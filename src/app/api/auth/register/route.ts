@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { createSessionToken, setSessionCookie } from "@/lib/session";
+import { AUTH_RATE_LIMIT, getClientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const schema = z.object({
   name: z.string().min(1).max(80),
@@ -11,6 +12,12 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rl = rateLimit(`register:${ip}`, AUTH_RATE_LIMIT.limit, AUTH_RATE_LIMIT.windowMs);
+  if (!rl.ok) {
+    return rateLimitResponse(rl.retryAfterSec, "Zu viele Registrierungsversuche. Bitte später erneut.");
+  }
+
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json(

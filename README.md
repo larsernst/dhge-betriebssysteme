@@ -57,6 +57,24 @@ docker compose up --build -d
 Beim ersten Start führt der Container automatisch `prisma migrate deploy`
 und den Seed aus, sodass die 100 Fragen in der Datenbank liegen.
 
+> **Wichtig:** Beim Start prüft die App, dass `JWT_SECRET` gesetzt und kein
+> Platzhalter mehr ist – sonst beendet sich der Web-Container sofort mit einer
+> klaren Fehlermeldung. Trage also in `.env` einen langen Zufallswert ein.
+
+## Sicherheit & Backups
+
+- **Passwort-Hashing** mit bcryptjs (cost 10), **Session** als signiertes
+  JWT (HS256) in einem `httpOnly`-Cookie.
+- **Rate-Limiting** auf `/api/auth/login` und `/api/auth/register`
+  (≈10 Versuche/Minute pro IP, danach 429 mit `Retry-After`).
+- **CSRF-Schutz** für `/api/auth/logout` über `Origin`/`Sec-Fetch-Site`-Check
+  (optional weitere Origins über `ALLOWED_ORIGINS` in `.env`).
+- **DB-Backups:** `sh scripts/backup-db.sh` erzeugt ein binäres
+  `pg_dump`-Dump im Ordner `backups/`. Wiederherstellung:
+  `docker compose exec -T db pg_restore -U lernapp -d lernapp -c < backups/<datei>.dump`
+  Der `pgdata`-Volume bleibt bei `docker compose down` erhalten, nur
+  `docker compose down -v` löscht die Daten.
+
 ## Lokale Entwicklung (ohne Docker)
 
 Voraussetzungen: Node ≥ 20, eine laufende PostgreSQL-Instanz.
