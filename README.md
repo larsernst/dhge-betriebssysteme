@@ -13,7 +13,7 @@
 ![Status](https://img.shields.io/badge/Status-Lern--Projekt-orange?style=for-the-badge)
 
 Eine TypeScript-/Next.js-Webanwendung zum Vorbereiten auf die Prüfung
-„Betriebssysteme – Grundlagen" (Fragenkatalog 2026, Dozent: Ing. Leonard Zeh).
+„Betriebssysteme – Grundlagen"
 Die App enthält **alle 100 Fragen** des offiziellen Fragenkatalogs mit
 Modellantworten, die aus den Vorlesungsfolien erstellt wurden, und nutzt
 **Spaced Repetition (SM-2)** mit freier Erinnerung (Selbsteinschätzung).
@@ -135,4 +135,4 @@ docs/                   Doku (TESTING, ARCHITECTURE, LERNEN)
 ## Lizenz & Nutzung
 
 Nur für persönliche Lernzwecke. Keine offizielle Veröffentlichung der
-Hochschule. Vorlesungsinhalte: Ing. Leonard Zeh (`leze.software@gmail.com`).
+Hochschule.
