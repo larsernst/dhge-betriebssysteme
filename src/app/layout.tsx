@@ -10,7 +10,7 @@ const THEME_SCRIPT = `(function(){var t=localStorage.getItem("bs-theme")||"dark"
 export const metadata: Metadata = {
   title: "BS Lern-App – Betriebssysteme Grundlagen",
   description:
-    "Lern-App für den Fragenkatalog Betriebssysteme Grundlagen (Dozent L. Zeh) mit Lückentext-Wiederholung und Spaced Repetition.",
+    "Lern-App fuer den Fragenkatalog Betriebssysteme Grundlagen mit Lueckentext-Wiederholung und Spaced Repetition.",
 };
 
 export const viewport: Viewport = {
@@ -81,7 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main>{children}</main>
         <footer className="footer">
           <div className="page">
-            BS Lern-App · Fragenkatalog 2026 Betriebssysteme Grundlagen · Dozent: Ing. Leonard Zeh
+            BS Lern-App · Fragenkatalog 2026 Betriebssysteme Grundlagen
             <br />
             Nur für Lernzwecke. Keine offizielle Veröffentlichung der Hochschule.
           </div>

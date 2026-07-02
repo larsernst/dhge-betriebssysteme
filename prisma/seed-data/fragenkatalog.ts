@@ -1,4 +1,4 @@
-// Fragenkatalog 2026 – Betriebssysteme Grundlagen (L. Zeh)
+// Fragenkatalog 2026 – Betriebssysteme Grundlagen
 // Antworten wurden vom Entwickler verfasst aus den Vorlesungsfolieninhalten
 // in resources/ (Kapitel 1/2/3_gesamt, Kapitel 2 = E/A, Speicherverwaltung,
 // Datensicherung, Kapitel 6 gesamt). Die Quelle jeder Antwort ist in

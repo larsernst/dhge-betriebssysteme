@@ -33,7 +33,7 @@ Voraussetzung: App und Datenbank laufen. Einfach via Docker:
 ```bash
 docker compose up --build -d
 # einmal initialisieren lassen, dann:
-BASE_URL=http://localhost:3000 npm run test:e2e
+BASE_URL=http://<your-host>:<port> npm run test:e2e
 ```
 
 Für CI kann ein eigener Test-Stack hochgefahren werden (z. B. mit separatem

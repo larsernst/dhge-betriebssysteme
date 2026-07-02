@@ -2,7 +2,7 @@
   "name": "bs-lernapp",
   "version": "1.0.0",
   "private": true,
-  "description": "Lern-App fuer den Fragenkatalog Betriebssysteme Grundlagen (Dozent L. Zeh)",
+  "description": "Lern-App fuer den Fragenkatalog Betriebssysteme Grundlagen",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

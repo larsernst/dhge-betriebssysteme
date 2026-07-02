@@ -8,7 +8,7 @@ Vor jedem Commit sind auszuführen:
 npm run typecheck      # tsc --noEmit
 npm run test:unit      # Vitest
 # E2E nur gegen laufende App+DB:
-BASE_URL=http://localhost:3000 npm run test:e2e
+BASE_URL=http://<your-host>:<port> npm run test:e2e
 ```
 
 `npm run lint` (`next lint`) ist verfügbar, aber nicht Teil des Pflicht-Checks.

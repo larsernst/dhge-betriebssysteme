@@ -13,7 +13,7 @@
 ![Status](https://img.shields.io/badge/Status-Lern--Projekt-orange?style=for-the-badge)
 
 Eine TypeScript-/Next.js-Webanwendung zum Vorbereiten auf die Prüfung
-„Betriebssysteme – Grundlagen"
+„Betriebssysteme – Grundlagen".
 Die App enthält **alle 100 Fragen** des offiziellen Fragenkatalogs mit
 Modellantworten, die aus den Vorlesungsfolien erstellt wurden, und nutzt
 **Spaced Repetition (SM-2)** mit freier Erinnerung (Selbsteinschätzung).
@@ -52,8 +52,7 @@ cp .env.example .env
 # 2. Stack bauen und starten
 docker compose up --build -d
 
-# 3. App öffnen
-# http://localhost:3000
+# 3. App öffnen (Port aus .env – Standard 3000)
 ```
 
 Beim ersten Start führt der Container automatisch `prisma migrate deploy`
@@ -86,7 +85,7 @@ npm install
 cp .env.example .env            # DATABASE_URL + JWT_SECRET anpassen
 npx prisma migrate dev          # Schema anlegen + Client erzeugen
 npm run db:seed                 # 100 Fragen laden
-npm run dev                     # http://localhost:3000
+npm run dev
 ```
 
 ## Tests
@@ -96,7 +95,7 @@ npm run dev                     # http://localhost:3000
 npm run test:unit
 
 # E2E-Tests (App + DB müssen laufen, z. B. via docker compose)
-BASE_URL=http://localhost:3000 npm run test:e2e
+BASE_URL=<deine-URL> npm run test:e2e
 ```
 
 Details: [`docs/TESTING.md`](docs/TESTING.md).

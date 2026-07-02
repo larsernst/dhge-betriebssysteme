@@ -1,7 +1,7 @@
 # Fragenkatalog
 
-Die App basiert auf dem **Fragenkatalog 2026 Betriebssysteme – Grundlagen**
-von Ing. Leonard Zeh. Die Fragen sind in `prisma/seed-data/fragenkatalog.ts`
+Die App basiert auf dem Fragenkatalog 2026 Betriebssysteme – Grundlagen.
+Die Fragen sind in `prisma/seed-data/fragenkatalog.ts`
 als typisiertes Array abgelegt und werden beim Seed in die Tabelle
 `Question` geschrieben.
 
