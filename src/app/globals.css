@@ -237,6 +237,17 @@ button {
   background: var(--ds-background-brand-bold-hovered);
 }
 
+.nav-cta--secondary {
+  background: transparent;
+  color: var(--ds-ink);
+  border: 1px solid var(--ds-border-strong);
+}
+
+.nav-cta--secondary:hover {
+  border-color: var(--ds-border-strong);
+  background: var(--ds-background-canvas);
+}
+
 .nav-user {
   font-size: 14px;
   color: var(--ds-text-subtle);

@@ -58,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                       Einstell.
                     </Link>
                     <form action="/api/auth/logout" method="post" className="nav-logout-form">
-                      <button type="submit" className="btn btn--secondary btn--sm">
+                      <button type="submit" className="nav-cta nav-cta--secondary">
                         Abmelden
                       </button>
                     </form>
