@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
+
+const THEME_SCRIPT = `(function(){var t=localStorage.getItem("bs-theme")||"dark";document.documentElement.setAttribute("data-theme",t);}());`;
 
 export const metadata: Metadata = {
   title: "BS Lern-App – Betriebssysteme Grundlagen",
@@ -13,7 +16,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const user = await getCurrentUser();
 
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body>
         <header className="topnav">
           <div className="topnav__inner">
@@ -21,6 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               BS Lern-App
             </Link>
             <nav className="topnav__links">
+              <ThemeToggle />
               <Link href="/lernen" className="navlink">
                 Lernen
               </Link>

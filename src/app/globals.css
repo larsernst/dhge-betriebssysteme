@@ -1,4 +1,52 @@
 :root {
+  /* ── Dark mode (Standard) ──────────────────────────── */
+  --ds-link: #58a6ff;
+  --ds-link-pressed: #3d8fd9;
+  --ds-background-brand-bold: #1f6feb;
+  --ds-background-brand-bold-hovered: #388bfd;
+  --ds-background-brand-boldest: #0d419d;
+  --ds-text: #c9d1d9;
+  --ds-text-subtle: #8b949e;
+  --ds-text-subtlest: #6e7681;
+  --ds-ink: #e6edf3;
+  --ds-ink-on-dark: #ffffff;
+  --ds-background-canvas: #0d1117;
+  --ds-surface: #161b22;
+  --ds-surface-pressed: #21262d;
+  --ds-surface-selected: #1c2b41;
+  --ds-background-inverse-subtle: #ffffff;
+  --ds-border: #30363d;
+  --ds-border-strong: #484f58;
+  --ds-chart-green: #3fb950;
+  --ds-chart-blue: #58a6ff;
+  --ds-chart-purple: #bc8cff;
+  --ds-chart-red: #f85149;
+  --ds-chart-orange: #d29922;
+  --ds-text-success: #3fb950;
+
+  --ds-radius-xs: 3px;
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 10px;
+  --ds-radius-lg: 20px;
+  --ds-radius-full: 10000px;
+
+  --ds-space-xxs: 4px;
+  --ds-space-xs: 6px;
+  --ds-space-sm: 8px;
+  --ds-space-md: 16px;
+  --ds-space-base: 20px;
+  --ds-space-lg: 24px;
+  --ds-space-xl: 32px;
+  --ds-space-xxl: 40px;
+  --ds-space-section: 64px;
+
+  --ds-font-display: "Inter", -apple-system, system-ui, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --ds-font-text: "Inter", -apple-system, system-ui, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+[data-theme="light"] {
   --ds-link: #1868db;
   --ds-link-pressed: #1558bc;
   --ds-background-brand-bold: #1868db;
@@ -22,29 +70,6 @@
   --ds-chart-red: #ae2e24;
   --ds-chart-orange: #c75300;
   --ds-text-success: #4c6b1f;
-
-  --ds-radius-xs: 3px;
-  --ds-radius-sm: 4px;
-  --ds-radius-md: 10px;
-  --ds-radius-lg: 20px;
-  --ds-radius-full: 10000px;
-
-  --ds-space-xxs: 4px;
-  --ds-space-xs: 6px;
-  --ds-space-sm: 8px;
-  --ds-space-md: 16px;
-  --ds-space-base: 20px;
-  --ds-space-lg: 24px;
-  --ds-space-xl: 32px;
-  --ds-space-xxl: 40px;
-  --ds-space-section: 64px;
-
-  --ds-font-display: "Charlie Display", "Inter", -apple-system, system-ui,
-    "Segoe UI", Roboto, Oxygen, Ubuntu, "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
-  --ds-font-text: "Charlie Text", "Inter", -apple-system, system-ui,
-    "Segoe UI", Roboto, Oxygen, Ubuntu, "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
 }
 
 * {
@@ -58,8 +83,8 @@ body {
   background: var(--ds-background-canvas);
   color: var(--ds-ink);
   font-family: var(--ds-font-text);
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -125,9 +150,9 @@ button {
 
 /* Top navigation */
 .topnav {
-  background: var(--ds-background-canvas);
+  background: var(--ds-surface);
   border-bottom: 1px solid var(--ds-border);
-  height: 72px;
+  height: 56px;
   display: flex;
   align-items: center;
   padding: 0 var(--ds-space-lg);
@@ -151,6 +176,27 @@ button {
   font-weight: 600;
   font-size: 20px;
   color: var(--ds-ink);
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-full);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ds-text);
+  font-size: 16px;
+  padding: 0;
+  margin-right: var(--ds-space-sm);
+}
+
+.theme-toggle:hover {
+  border-color: var(--ds-border-strong);
+  color: var(--ds-link);
 }
 
 .topnav__links {
@@ -243,10 +289,10 @@ button {
 
 /* Cards */
 .card {
-  background: var(--ds-background-canvas);
+  background: var(--ds-surface);
   border: 1px solid var(--ds-border);
-  border-radius: var(--ds-radius-lg);
-  padding: var(--ds-space-xl);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-space-lg);
 }
 
 .card--brand {
@@ -290,13 +336,19 @@ button {
   font-family: var(--ds-font-text);
   color: var(--ds-ink);
   width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--ds-text-subtlest);
 }
 
 .input:focus,
 .textarea:focus {
-  outline: 2px solid var(--ds-link);
-  outline-offset: 1px;
+  outline: none;
   border-color: var(--ds-link);
+  box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.25);
 }
 
 .textarea {
