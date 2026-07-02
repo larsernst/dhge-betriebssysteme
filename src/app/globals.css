@@ -219,6 +219,24 @@ button {
   color: var(--ds-link);
 }
 
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  margin-left: var(--ds-space-xs);
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-background-brand-bold);
+  color: var(--ds-ink-on-dark);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nav-cta:hover {
+  background: var(--ds-background-brand-bold-hovered);
+}
+
 .nav-user {
   font-size: 14px;
   color: var(--ds-text-subtle);
