@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import SettingsClient from "./settings-client";
+import PasswordForm from "./password-form";
 
 export default async function EinstellungenPage() {
   const user = await getCurrentUser();
@@ -31,6 +32,14 @@ export default async function EinstellungenPage() {
         </p>
         <hr className="divider" />
         <SettingsClient initialMcqEnabled={me.mcqEnabled} />
+        <hr className="divider" />
+        <div>
+          <strong>Passwort ändern</strong>
+          <p className="muted" style={{ fontSize: 14, marginTop: 4, marginBottom: 16 }}>
+            Wähle ein starkes Passwort, das du nirgendwo anders verwendest.
+          </p>
+          <PasswordForm />
+        </div>
       </div>
     </div>
   );
