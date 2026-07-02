@@ -68,7 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <Link href="/login" className="navlink">
                       Anmelden
                     </Link>
-                    <Link href="/registrieren" className="btn btn--primary" style={{ minHeight: 40 }}>
+                    <Link href="/registrieren" className="btn btn--primary btn--sm">
                       Konto erstellen
                     </Link>
                   </>
