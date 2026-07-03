@@ -17,4 +17,13 @@ export const COURSES: CatalogCourse[] = [
     order: 1,
     published: true,
   },
+  {
+    id: "rechnernetze",
+    slug: "rechnernetze",
+    title: "Rechnernetze",
+    description:
+      "Netzstruktur, Referenzmodelle (OSI/TCP-IP), Bitübertragung, Sicherungsschicht und Vermittlungsschicht.",
+    order: 2,
+    published: true,
+  },
 ];
