@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { isAuthorizedAdmin } from "@/lib/admin-auth";
 
 const mcqOptionSchema = z.object({
   id: z.string().min(1),
@@ -24,22 +25,8 @@ const bodySchema = z.object({
   questions: z.array(questionSchema).min(1),
 });
 
-function isAuthorized(request: Request): boolean {
-  const expected = process.env.ADMIN_TOKEN;
-  if (!expected || expected.length < 16) return false;
-  const auth = request.headers.get("authorization");
-  if (auth?.toLowerCase().startsWith("bearer ")) {
-    const token = auth.slice(7).trim();
-    if (token && token === expected) return true;
-  }
-  const url = new URL(request.url);
-  const queryToken = url.searchParams.get("token");
-  if (queryToken && queryToken === expected) return true;
-  return false;
-}
-
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedAdmin(request)) {
     return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
   }
 
@@ -85,7 +72,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedAdmin(request)) {
     return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
   }
   const questions = await prisma.question.findMany({

@@ -5,6 +5,10 @@ export default function AdminPage() {
     <div className="page page--narrow" style={{ paddingTop: 64 }}>
       <p className="eyebrow">Verwaltung</p>
       <h1>Admin</h1>
+      <div className="row" style={{ gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <a className="navlink" href="/admin" style={{ fontWeight: 600 }}>Fragen</a>
+        <a className="navlink" href="/admin/nutzer">Nutzer</a>
+      </div>
       <div className="card">
         <p className="muted" style={{ fontSize: 14, marginBottom: 16 }}>
           Fragen als JSON hochladen. Das Format entspricht dem Fragenkatalog.
