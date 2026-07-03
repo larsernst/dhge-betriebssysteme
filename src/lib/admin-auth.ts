@@ -1,9 +1,19 @@
 export const ADMIN_TOKEN_MIN_LENGTH = 16;
 
+function expectedToken(): string | null {
+  const raw = process.env.ADMIN_TOKEN;
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (trimmed.length < ADMIN_TOKEN_MIN_LENGTH) return null;
+  return trimmed;
+}
+
 export function isAuthorizedAdmin(request: Request): boolean {
-  const expected = process.env.ADMIN_TOKEN;
-  if (!expected || expected.length < ADMIN_TOKEN_MIN_LENGTH) return false;
-  return getAdminTokenFromRequest(request) === expected;
+  const expected = expectedToken();
+  if (!expected) return false;
+  const provided = getAdminTokenFromRequest(request);
+  if (!provided) return false;
+  return provided === expected;
 }
 
 export function getAdminTokenFromRequest(request: Request): string | null {

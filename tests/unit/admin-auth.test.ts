@@ -23,9 +23,19 @@ describe("isAuthorizedAdmin", () => {
     expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(false);
   });
 
+  it("blocks when ADMIN_TOKEN is empty string", () => {
+    process.env.ADMIN_TOKEN = "";
+    expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(false);
+  });
+
   it("blocks when ADMIN_TOKEN is too short (< 16 chars)", () => {
     process.env.ADMIN_TOKEN = "short";
     expect(isAuthorizedAdmin(req({ headers: { authorization: "Bearer short" } }))).toBe(false);
+  });
+
+  it("blocks when ADMIN_TOKEN is whitespace-only", () => {
+    process.env.ADMIN_TOKEN = "                    ";
+    expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(false);
   });
 
   it("accepts a matching Bearer token (case-insensitive scheme)", () => {
@@ -43,6 +53,27 @@ describe("isAuthorizedAdmin", () => {
 
   it("rejects when no token is present", () => {
     expect(isAuthorizedAdmin(req())).toBe(false);
+  });
+
+  it("tolerates trailing whitespace/newline in ADMIN_TOKEN env value", () => {
+    process.env.ADMIN_TOKEN = `${TOKEN}\n`;
+    expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(true);
+  });
+
+  it("tolerates leading whitespace in ADMIN_TOKEN env value", () => {
+    process.env.ADMIN_TOKEN = `  ${TOKEN}`;
+    expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(true);
+  });
+
+  it("does not tolerate quotes embedded in ADMIN_TOKEN env value", () => {
+    process.env.ADMIN_TOKEN = `"${TOKEN}"`;
+    expect(isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}` } }))).toBe(false);
+  });
+
+  it("tolerates trailing spaces in the provided Bearer token", () => {
+    expect(
+      isAuthorizedAdmin(req({ headers: { authorization: `Bearer ${TOKEN}   ` } }))
+    ).toBe(true);
   });
 });
 
