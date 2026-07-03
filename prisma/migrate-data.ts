@@ -48,7 +48,7 @@ async function main() {
   }
   if (!courseTableExists) {
     console.error(
-      "Fehler: Die Tabelle „Course" existiert noch nicht.\n" +
+      "Fehler: Die Tabelle „Course“ existiert noch nicht.\n" +
         "Bitte zuerst die Schema-Migration anwenden:\n" +
         "  npx prisma migrate deploy"
     );
@@ -63,10 +63,10 @@ async function main() {
   });
   if (existingCourse) {
     console.log(
-      `Kurs „${existingCourse.title}" (${existingCourse.id}) bereits vorhanden – keine Neuanlage.`
+      `Kurs „${existingCourse.title}“ (${existingCourse.id}) bereits vorhanden – keine Neuanlage.`
     );
   } else {
-    console.log(`Lege Standardkurs „${DEFAULT_COURSE.title}" an …`);
+    console.log(`Lege Standardkurs „${DEFAULT_COURSE.title}“ an …`);
     if (!isDryRun) {
       await prisma.course.create({ data: DEFAULT_COURSE });
     }
@@ -81,7 +81,7 @@ async function main() {
   }
 
   console.log(
-    `${orphanCount} Frage(n) ohne Kurs gefunden -> Zuweisung zu „${DEFAULT_COURSE_ID}".`
+    `${orphanCount} Frage(n) ohne Kurs gefunden -> Zuweisung zu „${DEFAULT_COURSE_ID}“.`
   );
 
   if (!isDryRun) {
