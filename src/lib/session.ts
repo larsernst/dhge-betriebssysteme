@@ -16,6 +16,7 @@ export interface SessionPayload {
   sub: string;
   email: string;
   name: string;
+  roles: string[];
 }
 
 export interface SessionCookieOptions {
@@ -59,10 +60,12 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
     if (typeof payload.sub !== "string" || typeof payload.email !== "string") {
       return null;
     }
+    const roles = Array.isArray(payload.roles) ? (payload.roles as string[]) : [];
     return {
       sub: payload.sub,
       email: payload.email as string,
       name: (payload.name as string) ?? "",
+      roles,
     };
   } catch {
     return null;

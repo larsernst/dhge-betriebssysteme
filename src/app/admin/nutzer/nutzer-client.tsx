@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-const TOKEN_KEY = "admin_token";
+const ADMIN_ROLE = "admin";
 
 type User = {
   id: string;
@@ -10,11 +10,10 @@ type User = {
   email: string;
   mcqEnabled: boolean;
   createdAt: string;
+  roles: string[];
 };
 
 export default function NutzerClient() {
-  const [token, setToken] = useState("");
-  const [unlocked, setUnlocked] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,51 +21,27 @@ export default function NutzerClient() {
   const [success, setSuccess] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (localStorage.getItem(TOKEN_KEY)) setUnlocked(true);
-  }, []);
+  function jsonHeaders(): Record<string, string> {
+    return { "Content-Type": "application/json" };
+  }
 
-  function unlock(e: React.FormEvent) {
-    e.preventDefault();
-    const t = token.trim();
-    if (!t) {
-      setError("Bitte Token eingeben.");
-      return;
+  // 401/403 → Server leitet bereits um, aber falls der API-Call zurückkommt,
+  // zeigen wir eine verständliche Nachricht statt "Token ungültig".
+  function handleAuthFail(status: number): boolean {
+    if (status === 401 || status === 403) {
+      setError("Keine Admin-Berechtigung. Bitte als Admin anmelden.");
+      return true;
     }
-    localStorage.setItem(TOKEN_KEY, t);
-    setUnlocked(true);
-    setError(null);
-  }
-
-  function lock() {
-    localStorage.removeItem(TOKEN_KEY);
-    setUnlocked(false);
-    setToken("");
-    setUsers([]);
-  }
-
-  function authHeaders(storedToken: string, json = false): Record<string, string> {
-    const h: Record<string, string> = { Authorization: `Bearer ${storedToken}` };
-    if (json) h["Content-Type"] = "application/json";
-    return h;
+    return false;
   }
 
   const loadUsers = useCallback(async (q: string) => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (!storedToken) {
-      setUnlocked(false);
-      return;
-    }
     setLoading(true);
     setError(null);
     const url = q ? `/api/admin/users?q=${encodeURIComponent(q)}` : "/api/admin/users";
-    const res = await fetch(url, { headers: authHeaders(storedToken) });
+    const res = await fetch(url);
     setLoading(false);
-    if (res.status === 401) {
-      setUnlocked(false);
-      setError("Token ungültig oder abgelaufen.");
-      return;
-    }
+    if (handleAuthFail(res.status)) return;
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Nutzer konnten nicht geladen werden.");
@@ -77,30 +52,27 @@ export default function NutzerClient() {
   }, []);
 
   useEffect(() => {
-    if (unlocked) loadUsers(query);
-  }, [unlocked, query, loadUsers]);
+    loadUsers(query);
+  }, [query, loadUsers]);
 
   async function saveEdit(
     id: string,
-    data: { name?: string; email?: string; mcqEnabled?: boolean }
-  ) {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (!storedToken) {
-      setUnlocked(false);
-      return;
+    data: {
+      name?: string;
+      email?: string;
+      mcqEnabled?: boolean;
+      addRoles?: string[];
+      removeRoles?: string[];
     }
+  ) {
     setSuccess(null);
     setError(null);
     const res = await fetch(`/api/admin/users/${id}`, {
       method: "PATCH",
-      headers: authHeaders(storedToken, true),
+      headers: jsonHeaders(),
       body: JSON.stringify(data),
     });
-    if (res.status === 401) {
-      setUnlocked(false);
-      setError("Token ungültig oder abgelaufen.");
-      return;
-    }
+    if (handleAuthFail(res.status)) return;
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       setError(body.error ?? "Speichern fehlgeschlagen.");
@@ -112,51 +84,30 @@ export default function NutzerClient() {
   }
 
   async function resetPassword(id: string, name: string, newPassword: string) {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (!storedToken) {
-      setUnlocked(false);
-      return;
-    }
     setSuccess(null);
     setError(null);
     const res = await fetch("/api/admin/users", {
       method: "POST",
-      headers: authHeaders(storedToken, true),
+      headers: jsonHeaders(),
       body: JSON.stringify({ userId: id, newPassword }),
     });
-    if (res.status === 401) {
-      setUnlocked(false);
-      setError("Token ungültig oder abgelaufen.");
-      return;
-    }
+    if (handleAuthFail(res.status)) return;
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       setError(body.error ?? "Passwort konnte nicht zurückgesetzt werden.");
       return;
     }
-    setSuccess(`Passwort für „${name}" zurückgesetzt.`);
+    setSuccess(`Passwort für „${name}“ zurückgesetzt.`);
   }
 
   async function removeUser(user: User) {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (!storedToken) {
-      setUnlocked(false);
-      return;
-    }
     if (!window.confirm(`Nutzer „${user.name}" (${user.email}) wirklich löschen? Dies kann nicht rückgängig gemacht werden.`)) {
       return;
     }
     setSuccess(null);
     setError(null);
-    const res = await fetch(`/api/admin/users/${user.id}`, {
-      method: "DELETE",
-      headers: authHeaders(storedToken),
-    });
-    if (res.status === 401) {
-      setUnlocked(false);
-      setError("Token ungültig oder abgelaufen.");
-      return;
-    }
+    const res = await fetch(`/api/admin/users/${user.id}`, { method: "DELETE" });
+    if (handleAuthFail(res.status)) return;
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       setError(body.error ?? "Löschen fehlgeschlagen.");
@@ -164,33 +115,6 @@ export default function NutzerClient() {
     }
     setSuccess(`Nutzer „${user.name}" gelöscht.`);
     await loadUsers(query);
-  }
-
-  if (!unlocked) {
-    return (
-      <form onSubmit={unlock} className="stack">
-        {error && (
-          <div className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
-            {error}
-          </div>
-        )}
-        <div className="field">
-          <label htmlFor="adminToken">Admin-Token</label>
-          <input
-            id="adminToken"
-            type="password"
-            className="input"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            required
-            autoComplete="off"
-          />
-        </div>
-        <button type="submit" className="btn btn--primary btn--sm">
-          Entsperren
-        </button>
-      </form>
-    );
   }
 
   return (
@@ -214,14 +138,9 @@ export default function NutzerClient() {
         />
       </div>
 
-      <div className="row row--between" style={{ flexWrap: "wrap", alignItems: "center" }}>
-        <span className="muted" style={{ fontSize: 14 }}>
-          {loading ? "Lädt …" : `${users.length} Nutzer`}
-        </span>
-        <button type="button" className="btn btn--ghost btn--sm" onClick={lock}>
-          Sperren
-        </button>
-      </div>
+      <span className="muted" style={{ fontSize: 14 }}>
+        {loading ? "Lädt …" : `${users.length} Nutzer`}
+      </span>
 
       {users.length === 0 && !loading ? (
         <p className="muted">Keine Nutzer gefunden.</p>
@@ -258,7 +177,16 @@ function UserRow({
   editing: boolean;
   onEdit: () => void;
   onCancel: () => void;
-  onSave: (id: string, data: { name?: string; email?: string; mcqEnabled?: boolean }) => Promise<void>;
+  onSave: (
+    id: string,
+    data: {
+      name?: string;
+      email?: string;
+      mcqEnabled?: boolean;
+      addRoles?: string[];
+      removeRoles?: string[];
+    }
+  ) => Promise<void>;
   onResetPassword: (id: string, name: string, newPassword: string) => Promise<void>;
   onDelete: () => Promise<void>;
 }) {
@@ -321,14 +249,17 @@ function UserRow({
     );
   }
 
+  const isAdmin = user.roles.includes(ADMIN_ROLE);
+
   return (
     <div className="card" style={{ padding: 16 }}>
       <div className="row row--between" style={{ flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
         <div className="stack" style={{ gap: 4 }}>
-          <strong>{user.name}</strong>
-          <span className="muted" style={{ fontSize: 13 }}>
-            {user.email}
-          </span>
+          <strong>
+            {user.name}{" "}
+            {isAdmin && <span className="badge badge--muted" style={{ fontSize: 11 }}>Admin</span>}
+          </strong>
+          <span className="muted" style={{ fontSize: 13 }}>{user.email}</span>
           <span className="muted" style={{ fontSize: 12 }}>
             Registriert: {new Date(user.createdAt).toLocaleDateString("de-DE")}
           </span>
@@ -337,6 +268,15 @@ function UserRow({
           </span>
         </div>
         <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm"
+            onClick={() =>
+              onSave(user.id, isAdmin ? { removeRoles: [ADMIN_ROLE] } : { addRoles: [ADMIN_ROLE] })
+            }
+          >
+            {isAdmin ? "Admin entziehen" : "Zum Admin machen"}
+          </button>
           <button type="button" className="btn btn--ghost btn--sm" onClick={onEdit}>
             Bearbeiten
           </button>

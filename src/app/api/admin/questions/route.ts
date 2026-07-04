@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { isAuthorizedAdmin } from "@/lib/admin-auth";
+import { requireAdminApi } from "@/lib/auth";
 
 const mcqOptionSchema = z.object({
   id: z.string().min(1),
@@ -12,6 +12,7 @@ const mcqOptionSchema = z.object({
 
 const questionSchema = z.object({
   id: z.string().min(1),
+  courseId: z.string().min(1).optional(),
   chapter: z.number().int().min(1),
   chapterTitle: z.string().min(1),
   question: z.string().min(1),
@@ -26,9 +27,8 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
 
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
@@ -46,6 +46,7 @@ export async function POST(request: Request) {
       where: { id: q.id },
       create: {
         id: q.id,
+        courseId: q.courseId ?? null,
         chapter: q.chapter,
         chapterTitle: q.chapterTitle,
         question: q.question,
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
         confidence: q.confidence ?? null,
       },
       update: {
+        courseId: q.courseId ?? null,
         chapter: q.chapter,
         chapterTitle: q.chapterTitle,
         question: q.question,
@@ -71,14 +73,15 @@ export async function POST(request: Request) {
   return NextResponse.json({ ok: true, created, updated, total: parsed.data.questions.length });
 }
 
-export async function GET(request: Request) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+export async function GET() {
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
+
   const questions = await prisma.question.findMany({
     orderBy: [{ chapter: "asc" }, { id: "asc" }],
     select: {
       id: true,
+      courseId: true,
       chapter: true,
       chapterTitle: true,
       question: true,

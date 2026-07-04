@@ -2,33 +2,11 @@
 
 import { useState } from "react";
 
-const TOKEN_KEY = "admin_token";
-
 export default function AdminClient() {
-  const [token, setToken] = useState("");
-  const [unlocked, setUnlocked] = useState(false);
   const [jsonText, setJsonText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ created: number; updated: number; total: number } | null>(null);
-
-  function unlock(e: React.FormEvent) {
-    e.preventDefault();
-    const t = token.trim();
-    if (!t) {
-      setError("Bitte Token eingeben.");
-      return;
-    }
-    localStorage.setItem(TOKEN_KEY, t);
-    setUnlocked(true);
-    setError(null);
-  }
-
-  function lock() {
-    localStorage.removeItem(TOKEN_KEY);
-    setUnlocked(false);
-    setToken("");
-  }
 
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -42,11 +20,6 @@ export default function AdminClient() {
     e.preventDefault();
     setError(null);
     setResult(null);
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (!storedToken) {
-      setUnlocked(false);
-      return;
-    }
     let parsed: unknown;
     try {
       parsed = JSON.parse(jsonText);
@@ -57,10 +30,7 @@ export default function AdminClient() {
     setLoading(true);
     const res = await fetch("/api/admin/questions", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${storedToken}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(parsed),
     });
     setLoading(false);
@@ -69,40 +39,12 @@ export default function AdminClient() {
       setResult({ created: data.created, updated: data.updated, total: data.total });
       return;
     }
-    const data = await res.json().catch(() => ({}));
-    if (res.status === 401) {
-      setUnlocked(false);
-      setError("Token ungültig oder abgelaufen.");
+    if (res.status === 401 || res.status === 403) {
+      setError("Keine Admin-Berechtigung.");
       return;
     }
+    const data = await res.json().catch(() => ({}));
     setError(data.error ?? "Upload fehlgeschlagen.");
-  }
-
-  if (!unlocked) {
-    return (
-      <form onSubmit={unlock} className="stack">
-        {error && (
-          <div className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
-            {error}
-          </div>
-        )}
-        <div className="field">
-          <label htmlFor="adminToken">Admin-Token</label>
-          <input
-            id="adminToken"
-            type="password"
-            className="input"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            required
-            autoComplete="off"
-          />
-        </div>
-        <button type="submit" className="btn btn--primary btn--sm">
-          Entsperren
-        </button>
-      </form>
-    );
   }
 
   return (
@@ -130,16 +72,13 @@ export default function AdminClient() {
             rows={16}
             value={jsonText}
             onChange={(e) => setJsonText(e.target.value)}
-            placeholder='{"questions": [{ "id": "1-bsp", "chapter": 1, "chapterTitle": "Einführung", "question": "…?", "answer": "…", "sourceRef": "…" }]}'
+            placeholder='{"questions": [{ "id": "1-bsp", "courseId": "betriebssysteme", "chapter": 1, "chapterTitle": "Einführung", "question": "…?", "answer": "…", "sourceRef": "…" }]}'
             style={{ fontFamily: "monospace", fontSize: 13, resize: "vertical" }}
           />
         </div>
-        <div className="row row--between" style={{ flexWrap: "wrap" }}>
+        <div className="row" style={{ flexWrap: "wrap" }}>
           <button type="submit" className="btn btn--primary btn--sm" disabled={loading || !jsonText.trim()}>
             {loading ? "Lädt …" : "Fragen hochladen"}
-          </button>
-          <button type="button" className="btn btn--ghost btn--sm" onClick={lock}>
-            Sperren
           </button>
         </div>
       </form>
