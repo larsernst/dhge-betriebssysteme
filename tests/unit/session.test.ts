@@ -24,18 +24,34 @@ describe("session token (jose)", () => {
       sub: "user_1",
       email: "max@example.org",
       name: "Max",
+      roles: ["admin"],
     });
     const payload = await verifySessionToken(token);
     expect(payload).not.toBeNull();
     expect(payload?.sub).toBe("user_1");
     expect(payload?.email).toBe("max@example.org");
     expect(payload?.name).toBe("Max");
+    expect(payload?.roles).toEqual(["admin"]);
+  });
+
+  it("defaults roles to [] when the token has none", async () => {
+    process.env.JWT_SECRET = SECRET;
+    process.env.NEXTAUTH_SECRET = SECRET;
+    const token = await createSessionToken({
+      sub: "user_2",
+      email: "min@example.org",
+      name: "Min",
+      roles: [],
+    });
+    const payload = await verifySessionToken(token);
+    expect(payload?.roles).toEqual([]);
   });
 
   it("returns null for a tampered token", async () => {
     process.env.JWT_SECRET = SECRET;
     process.env.NEXTAUTH_SECRET = SECRET;
-    const bad = (await createSessionToken({ sub: "x", email: "y", name: "z" })) + "tamper";
+    const bad =
+      (await createSessionToken({ sub: "x", email: "y", name: "z", roles: [] })) + "tamper";
     expect(await verifySessionToken(bad)).toBeNull();
   });
 

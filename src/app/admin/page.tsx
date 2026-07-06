@@ -1,6 +1,8 @@
 import AdminClient from "./admin-client";
+import { requireAdminPage } from "@/lib/auth";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  await requireAdminPage();
   return (
     <div className="page page--narrow" style={{ paddingTop: 64 }}>
       <p className="eyebrow">Verwaltung</p>

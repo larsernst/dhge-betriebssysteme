@@ -2,24 +2,31 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { isAuthorizedAdmin } from "@/lib/admin-auth";
+import { requireAdminApi, ADMIN_ROLE } from "@/lib/auth";
 
 const patchSchema = z
   .object({
     name: z.string().min(1).optional(),
     email: z.string().email().optional(),
     mcqEnabled: z.boolean().optional(),
+    addRoles: z.array(z.string().min(1)).optional(),
+    removeRoles: z.array(z.string().min(1)).optional(),
   })
-  .refine((v) => v.name !== undefined || v.email !== undefined || v.mcqEnabled !== undefined, {
-    message: "Keine Daten zum Aktualisieren.",
-  });
+  .refine(
+    (v) =>
+      v.name !== undefined ||
+      v.email !== undefined ||
+      v.mcqEnabled !== undefined ||
+      v.addRoles !== undefined ||
+      v.removeRoles !== undefined,
+    { message: "Keine Daten zum Aktualisieren." }
+  );
 
 type Params = { params: { id: string } };
 
 export async function PATCH(request: Request, { params }: Params) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
 
   const parsed = patchSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
@@ -31,7 +38,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
   const existing = await prisma.user.findUnique({
     where: { id: params.id },
-    select: { id: true },
+    select: { id: true, roles: { select: { role: true } } },
   });
   if (!existing) {
     return NextResponse.json({ error: "Nutzer nicht gefunden." }, { status: 404 });
@@ -52,18 +59,56 @@ export async function PATCH(request: Request, { params }: Params) {
     data.email = email;
   }
 
+  // Rollen-Änderungen: Self-Protection – ein Admin darf sich selbst die
+  // Admin-Rolle nicht entziehen (verhindert das versehentliche Aussperren
+  // des letzten Admins durch sich selbst).
+  const currentRoles = new Set(existing.roles.map((r) => r.role));
+  const toAdd = parsed.data.addRoles ?? [];
+  const toRemove = parsed.data.removeRoles ?? [];
+  if (toRemove.includes(ADMIN_ROLE) && params.id === guard.user.sub) {
+    return NextResponse.json(
+      { error: "Du kannst dir nicht selbst die Admin-Rolle entziehen." },
+      { status: 400 }
+    );
+  }
+
+  if (toAdd.length > 0) {
+    data.roles = {
+      ...(data.roles ?? {}),
+      create: toAdd
+        .filter((role) => !currentRoles.has(role))
+        .map((role) => ({ role })),
+    };
+  }
+  if (toRemove.length > 0) {
+    data.roles = {
+      ...(data.roles ?? {}),
+      delete: toRemove
+        .filter((role) => currentRoles.has(role))
+        .map((role) => ({ userId_role: { userId: params.id, role } })),
+    };
+  }
+
   const updated = await prisma.user.update({
     where: { id: params.id },
     data,
-    select: { id: true, name: true, email: true, mcqEnabled: true, createdAt: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      mcqEnabled: true,
+      createdAt: true,
+      roles: { select: { role: true } },
+    },
   });
-  return NextResponse.json({ user: updated });
+  return NextResponse.json({
+    user: { ...updated, roles: updated.roles.map((r) => r.role) },
+  });
 }
 
 export async function DELETE(request: Request, { params }: Params) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
 
   const existing = await prisma.user.findUnique({
     where: { id: params.id },
@@ -71,6 +116,14 @@ export async function DELETE(request: Request, { params }: Params) {
   });
   if (!existing) {
     return NextResponse.json({ error: "Nutzer nicht gefunden." }, { status: 404 });
+  }
+
+  // Self-Protection: Admin darf sich nicht selbst löschen.
+  if (params.id === guard.user.sub) {
+    return NextResponse.json(
+      { error: "Du kannst dich nicht selbst löschen." },
+      { status: 400 }
+    );
   }
 
   await prisma.user.delete({ where: { id: params.id } });

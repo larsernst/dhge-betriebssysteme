@@ -23,7 +23,10 @@ export async function POST(request: Request) {
   }
   const { email, password } = parsed.data;
 
-  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  const user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+    include: { roles: { select: { role: true } } },
+  });
   if (!user) {
     return NextResponse.json({ error: "E-Mail oder Passwort falsch." }, { status: 401 });
   }
@@ -32,10 +35,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "E-Mail oder Passwort falsch." }, { status: 401 });
   }
 
+  const roles = user.roles.map((r) => r.role);
   const token = await createSessionToken({
     sub: user.id,
     email: user.email,
     name: user.name,
+    roles,
   });
   await setSessionCookie(token);
 

@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { isAuthorizedAdmin } from "@/lib/admin-auth";
+import { requireAdminApi } from "@/lib/auth";
 import { hashPassword } from "@/lib/password";
 
 const resetPasswordSchema = z.object({
@@ -16,21 +15,21 @@ const userSelect = {
   email: true,
   mcqEnabled: true,
   createdAt: true,
-} as const satisfies Prisma.UserSelect;
+  roles: { select: { role: true } },
+} as const;
 
 export async function GET(request: Request) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
 
   const url = new URL(request.url);
   const q = url.searchParams.get("q")?.trim() ?? "";
 
-  const where: Prisma.UserWhereInput = q
+  const where = q
     ? {
         OR: [
-          { name: { contains: q, mode: "insensitive" } },
-          { email: { contains: q, mode: "insensitive" } },
+          { name: { contains: q, mode: "insensitive" as const } },
+          { email: { contains: q, mode: "insensitive" as const } },
         ],
       }
     : {};
@@ -41,13 +40,14 @@ export async function GET(request: Request) {
     orderBy: { createdAt: "desc" },
   });
 
-  return NextResponse.json({ users });
+  return NextResponse.json({
+    users: users.map((u) => ({ ...u, roles: u.roles.map((r) => r.role) })),
+  });
 }
 
 export async function POST(request: Request) {
-  if (!isAuthorizedAdmin(request)) {
-    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
-  }
+  const guard = await requireAdminApi();
+  if (!guard.ok) return guard.response;
 
   const parsed = resetPasswordSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {

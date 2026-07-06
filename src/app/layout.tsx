@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles, isAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "@/components/mobile-nav";
@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
 
   return (
     <html lang="de" suppressHydrationWarning>
@@ -44,6 +44,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 {user ? (
                   <>
                     <span className="nav-user">{user.name}</span>
+                    {isAdmin(user) && (
+                      <Link href="/admin" className="navlink" title="Verwaltung">
+                        Admin
+                      </Link>
+                    )}
                     <Link href="/einstellungen" className="navlink" title="Einstellungen">
                       Einstell.
                     </Link>
@@ -64,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   </>
                 )}
               </nav>
-              <MobileNav user={user ? { name: user.name } : null} />
+              <MobileNav user={user ? { name: user.name, isAdmin: isAdmin(user) } : null} />
             </div>
           </div>
         </header>
