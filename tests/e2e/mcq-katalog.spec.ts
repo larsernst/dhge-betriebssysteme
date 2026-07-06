@@ -68,7 +68,7 @@ test.describe("Multiple-Choice (Nennen-Fragen)", () => {
       if (await reveal.isVisible().catch(() => false)) {
         await reveal.click();
         await page.getByRole("button", { name: "Easy" }).click();
-        await page.waitForTimeout(1100);
+        await page.getByRole("button", { name: "Nächste Frage" }).click();
         attempts++;
         continue;
       }
@@ -128,22 +128,24 @@ test.describe("MCQ-Toggle (Einstellungen)", () => {
     // Dann MCQ ausschalten -> naechste Karte (falls MCQ-Frage) sollte als Recall erscheinen.
     const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
     const mcqOpts = page.locator(".mcq-option input[type=checkbox]");
+    const naechste = page.getByRole("button", { name: "Nächste Frage" });
     if (await reveal.isVisible().catch(() => false)) {
       await reveal.click();
       await page.getByRole("button", { name: "Good" }).click();
-      await page.waitForTimeout(1100);
+      await expect(naechste).toBeVisible();
     } else if ((await mcqOpts.count()) > 0) {
       // MCQ-Karte: Option ankreuzen, dann wird der Button zu "Auswerten".
       await mcqOpts.first().check();
       await page.getByRole("button", { name: "Auswerten" }).click();
-      await page.waitForTimeout(1700);
+      await expect(naechste).toBeVisible();
     }
 
-    // MCQ ausschalten (Klick auf den sichtbaren Track, das native Input ist
-    // visuell versteckt: opacity 0, width/height 0).
+    // MCQ ausschalten (Klick auf den sichtbaren Track der MCQ-Zeile, das
+    // native Input ist visuell versteckt: opacity 0, width/height 0).
     await page.goto("/einstellungen");
     await expect(page.getByText("Multiple-Choice-Aufgaben")).toBeVisible();
-    await page.locator(".switch__track").click();
+    const mcqRow = page.locator(".row", { hasText: "Multiple-Choice-Aufgaben" });
+    await mcqRow.locator(".switch__track").click();
     await expect(page.getByText("Gespeichert")).toBeVisible();
 
     // Wieder auf /lernen – die naechste Frage sollte NIE ein "Auswerten"-Button zeigen

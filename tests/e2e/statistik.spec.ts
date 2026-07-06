@@ -17,6 +17,7 @@ test.describe("Statistik & schwieriger Stapel", () => {
     await page.waitForURL("**/lernen");
 
     // Eine Freie-Erinnerungs-Karte mit "Good" bewerten (falls MCQ kommt, "Easy"-Pfad nicht moeglich -> wiederholen).
+    const naechste = page.getByRole("button", { name: "Nächste Frage" });
     let guard = 0;
     while (guard++ < 20) {
       const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
@@ -24,14 +25,14 @@ test.describe("Statistik & schwieriger Stapel", () => {
       if (await reveal.isVisible().catch(() => false)) {
         await reveal.click();
         await page.getByRole("button", { name: "Good" }).click();
-        await page.waitForTimeout(1100);
+        await expect(naechste).toBeVisible();
         break;
       }
       if (await auswerten.isVisible().catch(() => false)) {
         // MCQ-Karte: einfach erste Option ankreuzen und auswerten
         await page.locator(".mcq-option input[type=checkbox]").first().check();
         await auswerten.click();
-        await page.waitForTimeout(1700);
+        await expect(naechste).toBeVisible();
         continue;
       }
       await page.waitForTimeout(500);
@@ -59,7 +60,7 @@ test.describe("Statistik & schwieriger Stapel", () => {
     const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
     await reveal.click();
     await page.getByRole("button", { name: "Again" }).click();
-    await page.waitForTimeout(1100);
+    await expect(page.getByRole("button", { name: "Nächste Frage" })).toBeVisible();
 
     // Schwieriger Stapel sollte nun diese Karte liefern.
     await page.goto("/lernen?deck=difficult");
