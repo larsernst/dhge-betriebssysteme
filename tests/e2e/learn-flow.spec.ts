@@ -37,9 +37,11 @@ test.describe("Lern-Sitzung mit SM-2", () => {
     await expect(async () => {
       const showBtn = page.getByRole("button", { name: "Musterantwort zeigen" });
       const doneHeading = page.getByRole("heading", { name: /erledigt/ });
+      const mcqOpts = page.locator(".mcq-option input[type=checkbox]");
       const showVisible = await showBtn.isVisible().catch(() => false);
       const doneVisible = await doneHeading.isVisible().catch(() => false);
-      expect(showVisible || doneVisible).toBeTruthy();
+      const mcqVisible = (await mcqOpts.count()) > 0;
+      expect(showVisible || doneVisible || mcqVisible).toBeTruthy();
     }).toPass();
 
     await page.goto("/fortschritt");

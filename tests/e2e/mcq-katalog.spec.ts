@@ -139,10 +139,11 @@ test.describe("MCQ-Toggle (Einstellungen)", () => {
       await page.waitForTimeout(1700);
     }
 
-    // MCQ ausschalten
+    // MCQ ausschalten (Klick auf den sichtbaren Track, das native Input ist
+    // visuell versteckt: opacity 0, width/height 0).
     await page.goto("/einstellungen");
     await expect(page.getByText("Multiple-Choice-Aufgaben")).toBeVisible();
-    await page.locator(".switch input").uncheck();
+    await page.locator(".switch__track").click();
     await expect(page.getByText("Gespeichert")).toBeVisible();
 
     // Wieder auf /lernen – die naechste Frage sollte NIE ein "Auswerten"-Button zeigen

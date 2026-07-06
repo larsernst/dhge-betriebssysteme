@@ -16,7 +16,8 @@ test.describe("Mobile (iPhone 12 – 390x844)", () => {
     await page.getByLabel("E-Mail").fill(email);
     await page.getByLabel(/^Passwort$/).fill("testpass1234");
     await page.getByRole("button", { name: "Anmelden" }).click();
-    await page.waitForURL("**/lernen");
+    // /lernen leitet per next.config auf /kurs/betriebssysteme/lernen weiter.
+    await page.waitForURL("**/lernen**", { timeout: 15000 });
 
     // Auf Desktop-Seite angekommen; Hamburger sollte sichtbar sein.
     await expect(page.locator(".mobile-nav-toggle")).toBeVisible();
