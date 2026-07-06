@@ -5,23 +5,23 @@ Die App hat zwei Test-Schichten: **Unit-Tests** (Vitest, rein logisch) und
 
 ## Unit-Tests (Vitest)
 
-Gedeckter Bereich (rein logisch, ohne Datenbank):
+Gedeckter Bereich (13 Testdateien, 126 Tests, rein logisch, ohne Datenbank):
 
-| Datei | Getestetes Verhalten |
-|---|---|
-| `tests/unit/sm2.test.ts` | SM-2-Fortschreibung, Intervalldauer, Ease-Faktor-Boden, „again"-Reset, Fälligkeit |
-| `tests/unit/serialize.test.ts` | `stripMcq` / `serializeQuestion`: `correct`-Flag wird entfernt (kein Answer-Leak), Auswahlmodus `single`/`multi`, MCQ-Deaktivierung |
-| `tests/unit/review-grade.test.ts` | `resolveReviewGrade`: MCQ richtig/falsch, Multi-Select, Recall-Grade, fehlende Optionen |
-| `tests/unit/validation.test.ts` | Alle API-Zod-Schemata (`login`, `register`, `passwordChange`, `reviewSubmit`, `examSubmit`, `adminQuestions`, `adminResetPassword`, `adminUserPatch`) |
-| `tests/unit/exam.test.ts` | `shuffle`, `selectExamQuestions`, `gradeExamAttempt` |
-| `tests/unit/stats.test.ts` | `computeStreak`, `buildHeatmap`, `buildLapsesLeaderboard` |
-| `tests/unit/session.test.ts` | Jose-JWT Round-Trip und Token-Manipulation |
-| `tests/unit/password.test.ts` | bcryptjs Hash/Verify, Salt-Eindeutigkeit |
-| `tests/unit/rate-limit.test.ts` | Fixed-Window-Limit, Retry-After, `getClientIp` |
-| `tests/unit/origin.test.ts` | `checkSameOrigin` (sec-fetch-site, Origin/Host, ALLOWED_ORIGINS) |
-| `tests/unit/env.test.ts` | `validateJwtSecret`: kurze/fehlende/Platzhalter-Secrets |
-| `tests/unit/auth.test.ts` | `isAdmin`-Rollenprüfung |
-| `tests/unit/make-admin.test.ts` | CLI-Argumente und `runMakeAdmin` (Promote, --force, --list) |
+| Datei | Tests | Getestetes Verhalten |
+|---|---|---|
+| `tests/unit/sm2.test.ts` | 18 | SM-2-Fortschreibung, Intervalldauer, Ease-Faktor-Boden, „again"-Reset, Fälligkeit |
+| `tests/unit/serialize.test.ts` | 11 | `stripMcq` / `serializeQuestion`: `correct`-Flag wird entfernt (kein Answer-Leak), Auswahlmodus `single`/`multi`, MCQ-Deaktivierung |
+| `tests/unit/review-grade.test.ts` | 7 | `resolveReviewGrade`: MCQ richtig/falsch, Multi-Select, Recall-Grade, fehlende Optionen |
+| `tests/unit/validation.test.ts` | 27 | Alle API-Zod-Schemata (`login`, `register`, `passwordChange`, `reviewSubmit`, `examSubmit`, `adminQuestions`, `adminResetPassword`, `adminUserPatch`) |
+| `tests/unit/exam.test.ts` | 8 | `shuffle`, `selectExamQuestions`, `gradeExamAttempt` |
+| `tests/unit/stats.test.ts` | 12 | `computeStreak`, `buildHeatmap`, `buildLapsesLeaderboard` |
+| `tests/unit/session.test.ts` | 8 | Jose-JWT Round-Trip und Token-Manipulation |
+| `tests/unit/password.test.ts` | 3 | bcryptjs Hash/Verify, Salt-Eindeutigkeit |
+| `tests/unit/rate-limit.test.ts` | 7 | Fixed-Window-Limit, Retry-After, `getClientIp` |
+| `tests/unit/origin.test.ts` | 7 | `checkSameOrigin` (sec-fetch-site, Origin/Host, ALLOWED_ORIGINS) |
+| `tests/unit/env.test.ts` | 4 | `validateJwtSecret`: kurze/fehlende/Platzhalter-Secrets |
+| `tests/unit/auth.test.ts` | 3 | `isAdmin`-Rollenprüfung |
+| `tests/unit/make-admin.test.ts` | 11 | CLI-Argumente und `runMakeAdmin` (Promote, --force, --list) |
 
 Die Zod-Schemata liegen in `src/lib/validation.ts` (zentral und damit
 isoliert testbar), die SM-2-Grade-Auflösung in `src/lib/review-grade.ts`.
