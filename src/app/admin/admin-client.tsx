@@ -72,7 +72,36 @@ export default function AdminClient() {
             rows={16}
             value={jsonText}
             onChange={(e) => setJsonText(e.target.value)}
-            placeholder='{"questions": [{ "id": "1-bsp", "courseId": "betriebssysteme", "chapter": 1, "chapterTitle": "Einführung", "question": "…?", "answer": "…", "sourceRef": "…" }]}'
+            placeholder={
+              '{\n' +
+              '  "questions": [\n' +
+              '    {\n' +
+              '      "id": "1-aufgaben-bs",\n' +
+              '      "courseId": "betriebssysteme",\n' +
+              '      "chapter": 1,\n' +
+              '      "chapterTitle": "Einführung",\n' +
+              '      "question": "Welche Aufgaben hat ein Betriebssystem?",\n' +
+              '      "answer": "Ein Betriebssystem abstrahiert das System, stellt Dienste bereit und verwaltet Ressourcen.",\n' +
+              '      "sourceRef": "Kapitel1.pdf S. 3",\n' +
+              '      "confidence": "high",\n' +
+              '      "mcqOptions": [\n' +
+              '        { "id": "1-aufgaben-bs-opt-1", "text": "Ressourcen verwalten", "correct": true },\n' +
+              '        { "id": "1-aufgaben-bs-opt-2", "text": "Dienste bereitstellen", "correct": true },\n' +
+              '        { "id": "1-aufgaben-bs-opt-3", "text": "Webseiten rendern", "correct": false }\n' +
+              '      ]\n' +
+              '    },\n' +
+              '    {\n' +
+              '      "id": "1-protokolle",\n' +
+              '      "courseId": "betriebssysteme",\n' +
+              '      "chapter": 1,\n' +
+              '      "chapterTitle": "Einführung",\n' +
+              '      "question": "Was sind Protokolle im BS-Kontext?",\n' +
+              '      "answer": "Nutzungsvorschriften, nach denen Dienste verwendet werden.",\n' +
+              '      "sourceRef": "Kapitel1.pdf S. 5"\n' +
+              '    }\n' +
+              '  ]\n' +
+              '}'
+            }
             style={{ fontFamily: "monospace", fontSize: 13, resize: "vertical" }}
           />
         </div>
