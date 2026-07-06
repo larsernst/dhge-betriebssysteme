@@ -34,15 +34,15 @@ test.describe("Lern-Sitzung mit SM-2", () => {
       timeout: 5000,
     });
 
-    await expect(async () => {
-      const showBtn = page.getByRole("button", { name: "Musterantwort zeigen" });
-      const doneHeading = page.getByRole("heading", { name: /erledigt/ });
-      const mcqOpts = page.locator(".mcq-option input[type=checkbox]");
-      const showVisible = await showBtn.isVisible().catch(() => false);
-      const doneVisible = await doneHeading.isVisible().catch(() => false);
-      const mcqVisible = (await mcqOpts.count()) > 0;
-      expect(showVisible || doneVisible || mcqVisible).toBeTruthy();
-    }).toPass();
+    // "Nächste Frage" anklicken (manueller Vorschub, kein Auto-Advance).
+    await page.getByRole("button", { name: "Nächste Frage" }).click();
+
+    // Nächste Karte muss geladen sein (Recall, MCQ oder "erledigt"-Screen).
+    await expect(
+      page.getByRole("button", { name: "Musterantwort zeigen" })
+        .or(page.locator(".mcq-option input[type=checkbox]").first())
+        .or(page.getByRole("heading", { name: /erledigt/ }))
+    ).toBeVisible({ timeout: 10000 });
 
     await page.goto("/fortschritt");
     await expect(page.getByRole("heading", { name: "Dein Stand" })).toBeVisible();
