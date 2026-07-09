@@ -10,7 +10,7 @@ export default async function LernenPage({
   searchParams,
 }: {
   params: { courseId: string };
-  searchParams: { deck?: string };
+  searchParams: { deck?: string; chapter?: string };
 }) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
@@ -18,50 +18,61 @@ export default async function LernenPage({
 
   const now = new Date();
   const deck = searchParams.deck === "difficult" ? "difficult" : "all";
+  const chapterParam = searchParams.chapter;
+  const chapter = chapterParam && /^\d+$/.test(chapterParam) ? Number(chapterParam) : undefined;
   const me = await prisma.user.findUnique({
     where: { id: user.sub },
     select: { simpleGrading: true },
   });
+
+  const scopeFilter = {
+    userId: user.sub,
+    question: { courseId: course.id, ...(chapter !== undefined ? { chapter } : {}) },
+  };
+
   const dueToday = await prisma.review.count({
-    where: {
-      userId: user.sub,
-      dueAt: { lte: now },
-      question: { courseId: course.id },
-      ...(deck === "difficult" ? { lapses: { gte: 1 } } : {}),
-    },
+    where: { ...scopeFilter, dueAt: { lte: now }, ...(deck === "difficult" ? { lapses: { gte: 1 } } : {}) },
   });
   const difficultDue = await prisma.review.count({
-    where: {
-      userId: user.sub,
-      dueAt: { lte: now },
-      question: { courseId: course.id },
-      lapses: { gte: 1 },
-    },
+    where: { ...scopeFilter, dueAt: { lte: now }, lapses: { gte: 1 } },
   });
+  const learnedAvailable = await prisma.review.count({ where: scopeFilter });
+
+  const heading = deck === "difficult"
+    ? "Schwierige Karten"
+    : chapter !== undefined
+      ? `Kapitel ${chapter} lernen`
+      : "Heute wiederholen";
 
   return (
     <div className="page page--narrow" style={{ paddingTop: 64 }}>
       <p className="eyebrow">{course.title} · Lern-Sitzung</p>
       <h1>
-        {deck === "difficult" ? "Schwierige Karten" : "Heute wiederholen"}
+        {heading}
         {dueToday > 0 ? `: ${dueToday} fällig` : ""}
       </h1>
       <KursNav courseId={course.id} />
       <div className="row" style={{ marginTop: 16, marginBottom: 16, flexWrap: "wrap" }}>
         <a
           className={`tab${deck === "all" ? " tab--active" : ""}`}
-          href={`/kurs/${course.id}/lernen`}
+          href={`/kurs/${course.id}/lernen${chapter !== undefined ? `?chapter=${chapter}` : ""}`}
         >
           Alle
         </a>
         <a
           className={`tab${deck === "difficult" ? " tab--active" : ""}`}
-          href={`/kurs/${course.id}/lernen?deck=difficult`}
+          href={`/kurs/${course.id}/lernen?deck=difficult${chapter !== undefined ? `&chapter=${chapter}` : ""}`}
         >
           Schwierig{difficultDue > 0 ? ` (${difficultDue})` : ""}
         </a>
       </div>
-      <StudyClient deck={deck} courseId={course.id} simpleGrading={me?.simpleGrading ?? false} />
+      <StudyClient
+        deck={deck}
+        courseId={course.id}
+        simpleGrading={me?.simpleGrading ?? false}
+        chapter={chapter}
+        learnedAvailable={learnedAvailable}
+      />
       <p className="muted desktop-only" style={{ fontSize: 13, marginTop: 16 }}>
         Tastatur: <strong>Leertaste/Enter</strong> = Aufdecken/Bestätigen ·{" "}
         <strong>{me?.simpleGrading ? "1–2" : "1–4"}</strong> ={" "}

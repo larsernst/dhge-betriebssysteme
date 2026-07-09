@@ -12,6 +12,9 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const difficultOnly = url.searchParams.get("deck") === "difficult";
   const courseId = url.searchParams.get("courseId") ?? undefined;
+  const chapterParam = url.searchParams.get("chapter");
+  const chapter = chapterParam && /^\d+$/.test(chapterParam) ? Number(chapterParam) : undefined;
+  const reviewLearned = url.searchParams.get("review") === "learned";
   const now = new Date();
 
   const me = await prisma.user.findUnique({
@@ -20,7 +23,30 @@ export async function GET(request: Request) {
   });
   const mcqEnabled = me?.mcqEnabled ?? true;
 
-  const courseFilter = courseId ? { question: { courseId } } : undefined;
+  const questionFilter: Record<string, unknown> = {};
+  if (courseId) questionFilter.courseId = courseId;
+  if (chapter !== undefined) questionFilter.chapter = chapter;
+  const courseFilter = Object.keys(questionFilter).length > 0 ? { question: questionFilter } : undefined;
+
+  if (reviewLearned) {
+    const learnedReviews = await prisma.review.findMany({
+      where: {
+        userId: user.sub,
+        ...(courseFilter ?? {}),
+      },
+      include: { question: true },
+      orderBy: [{ lastReviewedAt: "asc" }],
+      take: 1,
+    });
+    if (learnedReviews.length > 0) {
+      return NextResponse.json({
+        review: { question: serializeQuestion(learnedReviews[0].question, mcqEnabled) },
+        isNew: false,
+        deck: difficultOnly ? "difficult" : "all",
+      });
+    }
+    return NextResponse.json({ review: null, isNew: false, deck: difficultOnly ? "difficult" : "all" });
+  }
 
   const dueReviews = await prisma.review.findMany({
     where: {
@@ -56,7 +82,9 @@ export async function GET(request: Request) {
     where: courseId ? { courseId } : undefined,
     orderBy: [{ chapter: "asc" }, { id: "asc" }],
   });
-  const nextNew = allQuestions.find((q) => !learnedIds.has(q.id));
+  const nextNew = allQuestions.find(
+    (q) => !learnedIds.has(q.id) && (chapter === undefined || q.chapter === chapter)
+  );
 
   if (!nextNew) {
     return NextResponse.json({ review: null, isNew: false, deck: "all" });

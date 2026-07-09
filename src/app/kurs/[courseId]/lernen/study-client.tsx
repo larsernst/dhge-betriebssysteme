@@ -14,10 +14,14 @@ export default function StudyClient({
   deck = "all",
   courseId,
   simpleGrading = false,
+  chapter,
+  learnedAvailable = 0,
 }: {
   deck?: "all" | "difficult";
   courseId: string;
   simpleGrading?: boolean;
+  chapter?: number;
+  learnedAvailable?: number;
 }) {
   const [data, setData] = useState<ReviewNextResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +31,10 @@ export default function StudyClient({
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reviewLearned, setReviewLearned] = useState(false);
 
-  async function loadNext() {
+  async function loadNext(opts?: { reviewLearned?: boolean }) {
+    const rl = opts?.reviewLearned ?? reviewLearned;
     setLoading(true);
     setSubmitting(false);
     setRevealed(false);
@@ -36,11 +42,12 @@ export default function StudyClient({
     setSelected([]);
     setFeedback(null);
     setError(null);
-    const url =
-      deck === "difficult"
-        ? `/api/review/next?deck=difficult&courseId=${encodeURIComponent(courseId)}`
-        : `/api/review/next?courseId=${encodeURIComponent(courseId)}`;
-    const res = await fetch(url);
+    const params = new URLSearchParams();
+    if (deck === "difficult") params.set("deck", "difficult");
+    params.set("courseId", courseId);
+    if (chapter !== undefined) params.set("chapter", String(chapter));
+    if (rl) params.set("review", "learned");
+    const res = await fetch(`/api/review/next?${params.toString()}`);
     setLoading(false);
     if (!res.ok) {
       setError("Karte konnte nicht geladen werden.");
@@ -49,6 +56,11 @@ export default function StudyClient({
     }
     const json = (await res.json()) as ReviewNextResponse;
     setData(json);
+  }
+
+  function startReviewLearned() {
+    setReviewLearned(true);
+    void loadNext({ reviewLearned: true });
   }
 
   useEffect(() => {
@@ -156,7 +168,7 @@ export default function StudyClient({
         <p className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
           {error}
         </p>
-        <button className="btn btn--secondary" onClick={loadNext}>
+        <button className="btn btn--secondary" onClick={() => loadNext()}>
           Erneut versuchen
         </button>
       </div>
@@ -169,14 +181,21 @@ export default function StudyClient({
         <span className="badge badge--success">Alles fällige gelernt</span>
         <h2>Für heute erledigt!</h2>
         <p className="muted">
-          {deck === "difficult"
-            ? "Keine schwierigen Karten mehr fällig. Wechsle zu „Alle“, um neue oder andere fällige Karten zu lernen."
-            : "Du hast alle Fragen einmal gelernt oder bist mit den fälligen Wiederholungen durch. Komm später wieder, um Spaced Repetition weiterlaufen zu lassen."}
+          {reviewLearned
+            ? "Keine gelernten Fragen mehr zum Wiederholen in diesem Bereich."
+            : deck === "difficult"
+              ? "Keine schwierigen Karten mehr fällig. Wechsle zu „Alle“, um neue oder andere fällige Karten zu lernen."
+              : "Du hast alle Fragen einmal gelernt oder bist mit den fälligen Wiederholungen durch. Komm später wieder, um Spaced Repetition weiterlaufen zu lassen."}
         </p>
-        <div className="row">
-          <button className="btn btn--secondary" onClick={loadNext}>
+        <div className="row" style={{ flexWrap: "wrap" }}>
+          <button className="btn btn--secondary" onClick={() => loadNext()}>
             {deck === "difficult" ? "Erneut suchen" : "Nach weiteren neuen Fragen suchen"}
           </button>
+          {learnedAvailable > 0 && !reviewLearned && (
+            <button className="btn btn--primary" onClick={startReviewLearned}>
+              Gelernte Fragen wiederholen
+            </button>
+          )}
           <Link href={`/kurs/${courseId}/katalog`} className="btn btn--ghost">
             Alle Fragen ansehen
           </Link>
@@ -201,6 +220,12 @@ export default function StudyClient({
           <span className="badge badge--success">Wiederholung</span>
         )}
       </div>
+
+      {reviewLearned && (
+        <p className="eyebrow" style={{ textAlign: "center" }}>
+          Wiederholung gelernter Fragen
+        </p>
+      )}
 
       <div className="card">
         <p className="review-question">{q.question}</p>
@@ -264,7 +289,7 @@ export default function StudyClient({
 
       {feedback && (
         <div className="row" style={{ justifyContent: "center" }}>
-          <button className="btn btn--primary" onClick={loadNext}>
+          <button className="btn btn--primary" onClick={() => loadNext()}>
             Nächste Frage
           </button>
         </div>
