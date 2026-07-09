@@ -28,4 +28,8 @@ export interface ReviewNextResponse {
   isNew: boolean;
 }
 
-export type SettingsPatch = { mcqEnabled?: boolean; simpleGrading?: boolean };
+export type SettingsPatch = {
+  mcqEnabled?: boolean;
+  simpleGrading?: boolean;
+  newQuestionsFirst?: boolean;
+};

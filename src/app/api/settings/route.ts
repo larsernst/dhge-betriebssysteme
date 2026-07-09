@@ -7,6 +7,7 @@ import type { SettingsPatch } from "@/lib/types";
 const schema = z.object({
   mcqEnabled: z.boolean().optional(),
   simpleGrading: z.boolean().optional(),
+  newQuestionsFirst: z.boolean().optional(),
 });
 
 export async function GET() {
@@ -16,11 +17,12 @@ export async function GET() {
   }
   const me = await prisma.user.findUnique({
     where: { id: user.sub },
-    select: { mcqEnabled: true, simpleGrading: true },
+    select: { mcqEnabled: true, simpleGrading: true, newQuestionsFirst: true },
   });
   return NextResponse.json({
     mcqEnabled: me?.mcqEnabled ?? true,
     simpleGrading: me?.simpleGrading ?? false,
+    newQuestionsFirst: me?.newQuestionsFirst ?? true,
   });
 }
 
@@ -36,10 +38,15 @@ export async function PATCH(request: Request) {
   const data: SettingsPatch = {};
   if (parsed.data.mcqEnabled !== undefined) data.mcqEnabled = parsed.data.mcqEnabled;
   if (parsed.data.simpleGrading !== undefined) data.simpleGrading = parsed.data.simpleGrading;
+  if (parsed.data.newQuestionsFirst !== undefined) data.newQuestionsFirst = parsed.data.newQuestionsFirst;
   const me = await prisma.user.update({
     where: { id: user.sub },
     data,
-    select: { mcqEnabled: true, simpleGrading: true },
+    select: { mcqEnabled: true, simpleGrading: true, newQuestionsFirst: true },
   });
-  return NextResponse.json({ mcqEnabled: me.mcqEnabled, simpleGrading: me.simpleGrading });
+  return NextResponse.json({
+    mcqEnabled: me.mcqEnabled,
+    simpleGrading: me.simpleGrading,
+    newQuestionsFirst: me.newQuestionsFirst,
+  });
 }

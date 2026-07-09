@@ -6,12 +6,15 @@ import type { SettingsPatch } from "@/lib/types";
 export default function SettingsClient({
   initialMcqEnabled,
   initialSimpleGrading,
+  initialNewQuestionsFirst,
 }: {
   initialMcqEnabled: boolean;
   initialSimpleGrading: boolean;
+  initialNewQuestionsFirst: boolean;
 }) {
   const [mcqEnabled, setMcqEnabled] = useState(initialMcqEnabled);
   const [simpleGrading, setSimpleGrading] = useState(initialSimpleGrading);
+  const [newQuestionsFirst, setNewQuestionsFirst] = useState(initialNewQuestionsFirst);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -35,6 +38,11 @@ export default function SettingsClient({
   function toggleSimpleGrading(next: boolean) {
     setSimpleGrading(next);
     void patch({ simpleGrading: next });
+  }
+
+  function toggleNewQuestionsFirst(next: boolean) {
+    setNewQuestionsFirst(next);
+    void patch({ newQuestionsFirst: next });
   }
 
   return (
@@ -72,6 +80,26 @@ export default function SettingsClient({
             type="checkbox"
             checked={simpleGrading}
             onChange={(e) => toggleSimpleGrading(e.target.checked)}
+            disabled={saving}
+          />
+          <span className="switch__track" aria-hidden="true">
+            <span className="switch__thumb" />
+          </span>
+        </label>
+      </div>
+      <div className="row row--between" style={{ flexWrap: "wrap" }}>
+        <div>
+          <strong>Neue Fragen zuerst lernen</strong>
+          <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
+            Standardmäßig aktiviert – lernt neue Fragen, bevor bereits Gelerntes
+            gefestigt wird. Ausschalten, um erst fällige Wiederholungen zu festigen.
+          </p>
+        </div>
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={newQuestionsFirst}
+            onChange={(e) => toggleNewQuestionsFirst(e.target.checked)}
             disabled={saving}
           />
           <span className="switch__track" aria-hidden="true">

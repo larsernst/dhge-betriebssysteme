@@ -15,6 +15,7 @@ model User {
   passwordHash String
   mcqEnabled   Boolean       @default(true)
   simpleGrading Boolean      @default(false)
+  newQuestionsFirst Boolean  @default(true)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   reviews      Review[]

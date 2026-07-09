@@ -19,9 +19,10 @@ export async function GET(request: Request) {
 
   const me = await prisma.user.findUnique({
     where: { id: user.sub },
-    select: { mcqEnabled: true },
+    select: { mcqEnabled: true, newQuestionsFirst: true },
   });
   const mcqEnabled = me?.mcqEnabled ?? true;
+  const newQuestionsFirst = me?.newQuestionsFirst ?? true;
 
   const questionFilter: Record<string, unknown> = {};
   if (courseId) questionFilter.courseId = courseId;
@@ -60,17 +61,7 @@ export async function GET(request: Request) {
     take: 1,
   });
 
-  if (dueReviews.length > 0) {
-    return NextResponse.json({
-      review: { question: serializeQuestion(dueReviews[0].question, mcqEnabled) },
-      isNew: false,
-      deck: difficultOnly ? "difficult" : "all",
-    });
-  }
-
-  if (difficultOnly) {
-    return NextResponse.json({ review: null, isNew: false, deck: "difficult" });
-  }
+  const dueFound = dueReviews.length > 0;
 
   const learnedQuestionIds = await prisma.review.findMany({
     where: { userId: user.sub },
@@ -86,13 +77,29 @@ export async function GET(request: Request) {
     (q) => !learnedIds.has(q.id) && (chapter === undefined || q.chapter === chapter)
   );
 
-  if (!nextNew) {
-    return NextResponse.json({ review: null, isNew: false, deck: "all" });
+  const dueResponse = dueFound
+    ? {
+        review: { question: serializeQuestion(dueReviews[0].question, mcqEnabled) },
+        isNew: false,
+        deck: difficultOnly ? ("difficult" as const) : ("all" as const),
+      }
+    : null;
+
+  const newResponse = nextNew
+    ? {
+        review: { question: serializeQuestion(nextNew, mcqEnabled) },
+        isNew: true,
+        deck: "all" as const,
+      }
+    : null;
+
+  if (difficultOnly) {
+    return NextResponse.json(dueResponse ?? { review: null, isNew: false, deck: "difficult" as const });
   }
 
-  return NextResponse.json({
-    review: { question: serializeQuestion(nextNew, mcqEnabled) },
-    isNew: true,
-    deck: "all",
-  });
+  if (newQuestionsFirst) {
+    return NextResponse.json(newResponse ?? dueResponse ?? { review: null, isNew: false, deck: "all" as const });
+  }
+
+  return NextResponse.json(dueResponse ?? newResponse ?? { review: null, isNew: false, deck: "all" as const });
 }
