@@ -62,6 +62,29 @@ export default function KurseClient({ courses }: { courses: CourseData[] }) {
     setSuccess("Frage gelöscht.");
   }
 
+  async function editQuestion(id: string, data: { question: string; answer: string }) {
+    setError(null);
+    setSuccess(null);
+    const res = await fetch(`/api/admin/questions/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error ?? "Speichern fehlgeschlagen.");
+      return false;
+    }
+    setQuestions((prev) => ({
+      ...prev,
+      [activeCourse]: (prev[activeCourse] ?? []).map((q) =>
+        q.id === id ? { ...q, question: data.question, answer: data.answer } : q
+      ),
+    }));
+    setSuccess("Frage aktualisiert.");
+    return true;
+  }
+
   async function addQuestion(data: {
     chapter: number;
     chapterTitle: string;
@@ -173,7 +196,12 @@ export default function KurseClient({ courses }: { courses: CourseData[] }) {
             </div>
             <div className="stack">
               {ch.items.map((q) => (
-                <QuestionRow key={q.id} question={q} onDelete={() => deleteQuestion(q)} />
+                <QuestionRow
+                  key={q.id}
+                  question={q}
+                  onDelete={() => deleteQuestion(q)}
+                  onEdit={(data) => editQuestion(q.id, data)}
+                />
               ))}
             </div>
           </div>
@@ -183,17 +211,92 @@ export default function KurseClient({ courses }: { courses: CourseData[] }) {
   );
 }
 
-function QuestionRow({ question: q, onDelete }: { question: QuestionData; onDelete: () => void }) {
+function QuestionRow({
+  question: q,
+  onDelete,
+  onEdit,
+}: {
+  question: QuestionData;
+  onDelete: () => void;
+  onEdit: (data: { question: string; answer: string }) => Promise<boolean>;
+}) {
   const isMcq = q.mcqOptions !== null && q.mcqOptions !== undefined && q.mcqOptions.length > 0;
+  const [editing, setEditing] = useState(false);
+  const [editQuestion, setEditQuestion] = useState(q.question);
+  const [editAnswer, setEditAnswer] = useState(q.answer);
+  const [saving, setSaving] = useState(false);
+
+  function startEdit() {
+    setEditQuestion(q.question);
+    setEditAnswer(q.answer);
+    setEditing(true);
+  }
+
+  async function save() {
+    setSaving(true);
+    const ok = await onEdit({ question: editQuestion, answer: editAnswer });
+    setSaving(false);
+    if (ok) setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <div className="card" style={{ padding: 16 }}>
+        <div className="stack">
+          <div className="field">
+            <label>Frage</label>
+            <textarea
+              className="textarea"
+              rows={2}
+              value={editQuestion}
+              onChange={(e) => setEditQuestion(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Antwort</label>
+            <textarea
+              className="textarea"
+              rows={4}
+              value={editAnswer}
+              onChange={(e) => setEditAnswer(e.target.value)}
+            />
+          </div>
+          <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className="btn btn--primary btn--sm"
+              onClick={save}
+              disabled={saving || !editQuestion.trim() || !editAnswer.trim()}
+            >
+              {saving ? "Speichert …" : "Speichern"}
+            </button>
+            <button
+              type="button"
+              className="btn btn--ghost btn--sm"
+              onClick={() => setEditing(false)}
+              disabled={saving}
+            >
+              Abbrechen
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card" style={{ padding: 16 }}>
       <div className="row row--between" style={{ flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
-        <div className="stack" style={{ gap: 4, flex: 1, minWidth: 200 }}>
-          <strong style={{ fontSize: 15 }}>{q.question}</strong>
-          <span className="muted" style={{ fontSize: 13, lineHeight: 1.5 }}>
+        <div className="stack" style={{ gap: 0, flex: 1, minWidth: 200 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.4 }}>{q.question}</div>
+          <div className="divider" style={{ margin: "8px 0" }} />
+          <div className="muted" style={{ fontSize: 13, lineHeight: 1.5 }}>
+            <span className="eyebrow" style={{ fontSize: 11, display: "block", marginBottom: 4 }}>
+              Antwort
+            </span>
             {q.answer.slice(0, 150)}{q.answer.length > 150 ? "…" : ""}
-          </span>
-          <div className="row" style={{ gap: 6, flexWrap: "wrap", marginTop: 4 }}>
+          </div>
+          <div className="row" style={{ gap: 6, flexWrap: "wrap", marginTop: 8 }}>
             <span className="badge badge--muted" style={{ fontSize: 11 }}>
               {isMcq ? "Multiple-Choice" : "Freie Erinnerung"}
             </span>
@@ -203,9 +306,14 @@ function QuestionRow({ question: q, onDelete }: { question: QuestionData; onDele
             )}
           </div>
         </div>
-        <button type="button" className="btn btn--ghost btn--sm" onClick={onDelete}>
-          Löschen
-        </button>
+        <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={startEdit}>
+            Bearbeiten
+          </button>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={onDelete}>
+            Löschen
+          </button>
+        </div>
       </div>
     </div>
   );
