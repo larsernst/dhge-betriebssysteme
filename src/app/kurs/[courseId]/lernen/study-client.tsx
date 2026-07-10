@@ -105,6 +105,7 @@ export default function StudyClient({
 
   async function gradeRecall(grade: ReviewGrade) {
     if (!data?.review) return;
+    if (submitting) return;
     setSelectedGrade(grade);
     setSubmitting(true);
     const res = await fetch("/api/review/submit", {
@@ -125,6 +126,7 @@ export default function StudyClient({
           ? "Wird heute erneut angezeigt."
           : `Nächste Wiederholung ${intervalLabel(result.intervalDays)}.`,
     });
+    setSubmitting(false);
   }
 
   async function submitMcq() {
