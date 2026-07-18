@@ -79,9 +79,9 @@ test.describe("Mobile (iPhone 12 – 390x844)", () => {
     expect(overflow).toBeLessThanOrEqual(0);
 
     // Eine Karte anzeigen lassen – Freie-Erinnerung (Musterantwort zeigen)
-    // oder MCQ (.mcq-option) oder "erledigt"-Screen.
+    // oder MCQ (.mcq-option, checkbox oder radio) oder "erledigt"-Screen.
     const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
-    const mcqOpts = page.locator(".mcq-option input[type=checkbox]");
+    const mcqOpts = page.locator(".mcq-option input");
     const done = page.getByRole("heading", { name: /erledigt/ });
     await expect(
       reveal.or(mcqOpts.first()).or(done)

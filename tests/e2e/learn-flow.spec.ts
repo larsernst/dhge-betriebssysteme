@@ -21,8 +21,9 @@ test.describe("Lern-Sitzung mit SM-2", () => {
     await expect(page.getByText(/Kapitel \d/).first()).toBeVisible();
 
     if (await auswerten.isVisible().catch(() => false)) {
-      // MCQ-Karte: eine Option ankreuzen und auswerten.
-      await page.locator(".mcq-option input[type=checkbox]").first().check();
+      // MCQ-Karte: eine Option ankreuzen und auswerten (checkbox bei Multi,
+      // radio bei Single-Choice).
+      await page.locator(".mcq-option input").first().check();
       await auswerten.click();
     } else {
       await reveal.click();
@@ -40,7 +41,7 @@ test.describe("Lern-Sitzung mit SM-2", () => {
     // Nächste Karte muss geladen sein (Recall, MCQ oder "erledigt"-Screen).
     await expect(
       page.getByRole("button", { name: "Musterantwort zeigen" })
-        .or(page.locator(".mcq-option input[type=checkbox]").first())
+        .or(page.locator(".mcq-option input").first())
         .or(page.getByRole("heading", { name: /erledigt/ }))
     ).toBeVisible({ timeout: 10000 });
 

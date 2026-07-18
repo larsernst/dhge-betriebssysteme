@@ -33,7 +33,8 @@ test.describe("Pruefungssimulation", () => {
       const reveal = page.getByRole("button", { name: "Musterantwort zeigen" });
 
       if (await confirm.isVisible().catch(() => false)) {
-        await page.locator(".mcq-option input[type=checkbox]").first().check();
+        // MCQ-Frage: wähle die erste Option (checkbox bei Multi, radio bei Single).
+        await page.locator(".mcq-option input").first().check();
         await confirm.click();
         await page.waitForTimeout(150);
         continue;
