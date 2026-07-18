@@ -53,7 +53,7 @@ test.describe("Multiple-Choice (Nennen-Fragen)", () => {
     // Freie-Erinnerungs-Karten mit "Easy" verwerfen, bis eine MCQ-Karte kommt.
     let attempts = 0;
     while (attempts < 40) {
-      const mcqOptions = page.locator(".mcq-option input[type=checkbox]");
+      const mcqOptions = page.locator(".mcq-option input");
       const mcqVisible = (await mcqOptions.count()) > 0;
       if (mcqVisible) {
         // MCQ-Karte erreicht. Hinweis prüfen, Option ankreuzen, auswerten.

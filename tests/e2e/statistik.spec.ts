@@ -29,8 +29,9 @@ test.describe("Statistik & schwieriger Stapel", () => {
         break;
       }
       if (await auswerten.isVisible().catch(() => false)) {
-        // MCQ-Karte: einfach erste Option ankreuzen und auswerten
-        await page.locator(".mcq-option input[type=checkbox]").first().check();
+        // MCQ-Karte: einfach erste Option ankreuzen und auswerten (checkbox
+        // bei Multi, radio bei Single-Choice).
+        await page.locator(".mcq-option input").first().check();
         await auswerten.click();
         await expect(naechste).toBeVisible();
         continue;
