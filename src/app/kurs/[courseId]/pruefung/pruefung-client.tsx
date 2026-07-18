@@ -245,6 +245,7 @@ export default function PruefungClient({ courseId }: { courseId: string }) {
             }
             onSubmit={submitMcq}
             revealed={false}
+            submitLabel="Bestätigen & nächste"
           />
         ) : (
           <>

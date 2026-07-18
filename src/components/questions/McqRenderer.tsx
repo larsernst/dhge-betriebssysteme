@@ -11,12 +11,16 @@ export interface McqRendererProps {
   revealed: boolean;
   onToggle: (id: string) => void;
   onSubmit: () => void;
+  submitLabel?: string;
+  emptyLabel?: string;
 }
 
 export function McqRenderer(props: McqRendererProps) {
   const isSingle = props.selectionMode === "single";
   const selectionCount = props.selected.length;
   const inputType = isSingle ? "radio" : "checkbox";
+  const submitLabel = props.submitLabel ?? "Auswerten";
+  const emptyLabel = props.emptyLabel ?? "Bitte Optionen wählen";
   return (
     <>
       <p className="muted" style={{ fontSize: 14 }}>
@@ -61,7 +65,7 @@ export function McqRenderer(props: McqRendererProps) {
           onClick={props.onSubmit}
           disabled={props.disabled || selectionCount === 0}
         >
-          {selectionCount === 0 ? "Bitte Optionen wählen" : "Auswerten"}
+          {selectionCount === 0 ? emptyLabel : submitLabel}
         </button>
       ) : null}
     </>

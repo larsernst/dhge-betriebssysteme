@@ -16,24 +16,26 @@ test.describe("Multiple-Choice (Nennen-Fragen)", () => {
     const correctRes = await request.post("/api/review/submit", {
       data: {
         questionId: "6-drei-malware-arten",
+        taskType: "mcq",
         selectedOptionIds: ["6-drei-malware-opt-1", "6-drei-malware-opt-2", "6-drei-malware-opt-3"],
       },
     });
     expect(correctRes.ok()).toBeTruthy();
     const correctBody = await correctRes.json();
-    expect(correctBody.mode).toBe("mcq");
-    expect(correctBody.mcqCorrect).toBe(true);
+    expect(correctBody.taskType).toBe("mcq");
+    expect(correctBody.correct).toBe(true);
     expect(correctBody.correctOptionIds).toHaveLength(3);
 
     // Falsch: eine Distraktor (Firewall) statt Trojaner.
     const wrongRes = await request.post("/api/review/submit", {
       data: {
         questionId: "6-drei-malware-arten",
+        taskType: "mcq",
         selectedOptionIds: ["6-drei-malware-opt-1", "6-drei-malware-opt-4"],
       },
     });
     const wrongBody = await wrongRes.json();
-    expect(wrongBody.mcqCorrect).toBe(false);
+    expect(wrongBody.correct).toBe(false);
   });
 
   test("MCQ-Karte erscheint in der Lern-Sitzung und ist auswertbar", async ({ page, request }) => {
