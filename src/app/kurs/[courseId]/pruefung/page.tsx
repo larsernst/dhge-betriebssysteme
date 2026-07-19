@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import PruefungClient from "./pruefung-client";
 import { KursNav } from "../kurs-nav";
@@ -9,9 +9,9 @@ export default async function PruefungPage({
 }: {
   params: { courseId: string };
 }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
   if (!user) redirect("/login");
-  const course = await resolveCourse(params.courseId);
+  const course = await resolveCourse(params.courseId, { viewer: user });
 
   return (
     <div className="page page--narrow" style={{ paddingTop: 64 }}>

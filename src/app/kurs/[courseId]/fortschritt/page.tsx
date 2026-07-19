@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getMatureThresholdDays } from "@/lib/settings";
@@ -11,9 +11,9 @@ export default async function FortschrittPage({
 }: {
   params: { courseId: string };
 }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
   if (!user) redirect("/login");
-  const course = await resolveCourse(params.courseId);
+  const course = await resolveCourse(params.courseId, { viewer: user });
 
   const now = new Date();
 

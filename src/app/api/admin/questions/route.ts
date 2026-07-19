@@ -1,10 +1,59 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireAdminApi } from "@/lib/auth";
+import { requireEditorApi, requireAdminApi, isAdmin } from "@/lib/auth";
 import { adminQuestionsBodySchema as bodySchema } from "@/lib/validation";
 import { normalizeQuestionTask } from "@/lib/tasks/registry";
+import { canEditCourse } from "@/lib/course-access";
+import { slugify } from "@/lib/slug";
+import type { Course } from "@prisma/client";
 import type { TaskType } from "@/lib/tasks/types";
+
+const chapterKey = (courseId: string, chapter: number, title: string) =>
+  `${courseId}:${chapter}:${slugify(title)}`;
+
+async function ensureChapterId(courseId: string, chapter: number, title: string): Promise<string> {
+  const slug = `${chapter}-${slugify(title)}`;
+  const upserted = await prisma.chapter.upsert({
+    where: { courseId_slug: { courseId, slug } },
+    create: { courseId, slug, title, order: chapter },
+    update: {},
+  });
+  return upserted.id;
+}
+
+// Prüft, ob der Nutzer die Frage mit der gegebenen courseId anlegen/ändern darf.
+// null bedeutet "verwaiste Frage" und ist für Nicht-Admins verboten.
+function assertCourseEditPermission(
+  user: { sub: string; roles: string[] },
+  courseId: string | null,
+  courses: Map<string, Course>
+): { ok: true } | { ok: false; response: NextResponse } {
+  if (isAdmin(user)) return { ok: true };
+  if (!courseId) {
+    return {
+      ok: false,
+      response: NextResponse.json(
+        { error: "Nur Admins dürfen verwaiste Fragen bearbeiten." },
+        { status: 403 }
+      ),
+    };
+  }
+  const course = courses.get(courseId);
+  if (!course) {
+    return {
+      ok: false,
+      response: NextResponse.json({ error: "Kurs nicht gefunden." }, { status: 404 }),
+    };
+  }
+  if (!canEditCourse(user, course)) {
+    return {
+      ok: false,
+      response: NextResponse.json({ error: "Keine Berechtigung für diesen Kurs." }, { status: 403 }),
+    };
+  }
+  return { ok: true };
+}
 
 // Wandelt ein validiertes Frage-Objekt (das sowohl das neue taskType/payload-
 // als auch das legacy mcqOptions-Format haben kann) in die kanonische Form
@@ -46,7 +95,7 @@ function toTaskFields(q: {
 }
 
 export async function POST(request: Request) {
-  const guard = await requireAdminApi();
+  const guard = await requireEditorApi();
   if (!guard.ok) return guard.response;
 
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
@@ -57,17 +106,63 @@ export async function POST(request: Request) {
     );
   }
 
+  const questionIds = parsed.data.questions.map((q) => q.id);
+  const existingQuestions = await prisma.question.findMany({
+    where: { id: { in: questionIds } },
+    select: { id: true, courseId: true },
+  });
+  const existingById = new Map(existingQuestions.map((q) => [q.id, q]));
+
+  const courseIds = new Set<string>();
+  for (const q of parsed.data.questions) {
+    if (q.courseId) courseIds.add(q.courseId);
+    const existing = existingById.get(q.id);
+    if (existing?.courseId) courseIds.add(existing.courseId);
+  }
+  const courses = new Map(
+    (await prisma.course.findMany({ where: { id: { in: Array.from(courseIds) } } })).map((c) => [
+      c.id,
+      c,
+    ])
+  );
+
+  for (const q of parsed.data.questions) {
+    const existing = existingById.get(q.id);
+    const targetCourseId = q.courseId ?? null;
+    const sourceCourseId = existing?.courseId ?? null;
+
+    const sourcePerm = assertCourseEditPermission(guard.user, sourceCourseId, courses);
+    if (!sourcePerm.ok) return sourcePerm.response;
+    const targetPerm = assertCourseEditPermission(guard.user, targetCourseId, courses);
+    if (!targetPerm.ok) return targetPerm.response;
+  }
+
+  const chapterIds = new Map<string, string>();
+  const getChapterId = async (courseId: string, chapter: number, title: string): Promise<string> => {
+    const key = chapterKey(courseId, chapter, title);
+    const cached = chapterIds.get(key);
+    if (cached) return cached;
+    const id = await ensureChapterId(courseId, chapter, title);
+    chapterIds.set(key, id);
+    return id;
+  };
+
   let created = 0;
   let updated = 0;
   for (const q of parsed.data.questions) {
-    const exists = await prisma.question.findUnique({ where: { id: q.id }, select: { id: true } });
+    const exists = existingById.get(q.id);
     const taskFields = toTaskFields(q);
     const payloadValue = taskFields.payload ?? Prisma.JsonNull;
+    const courseId = q.courseId ?? null;
+    const chapterId = courseId
+      ? await getChapterId(courseId, q.chapter, q.chapterTitle)
+      : null;
     await prisma.question.upsert({
       where: { id: q.id },
       create: {
         id: q.id,
-        courseId: q.courseId ?? null,
+        courseId,
+        chapterId,
         chapter: q.chapter,
         chapterTitle: q.chapterTitle,
         question: q.question,
@@ -78,7 +173,8 @@ export async function POST(request: Request) {
         payload: payloadValue,
       },
       update: {
-        courseId: q.courseId ?? null,
+        courseId,
+        chapterId,
         chapter: q.chapter,
         chapterTitle: q.chapterTitle,
         question: q.question,
