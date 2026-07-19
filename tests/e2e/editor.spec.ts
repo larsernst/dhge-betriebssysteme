@@ -21,11 +21,15 @@ test("Kurs anlegen -> Curriculum -> Frage anlegen -> Einstellungen", async ({ pa
   // Direkt im Curriculum des neuen Kurses.
   await page.waitForURL(/\/editor\/kurs\/[^/]+$/);
   await expect(page.getByRole("heading", { name: title })).toBeVisible();
-  await expect(page.getByText("Keine Fragen in diesem Kurs")).toBeVisible();
+  await expect(page.getByText("Lege links dein erstes Kapitel an")).toBeVisible();
 
-  // Frage anlegen (Freie Erinnerung).
+  // Erst Kapitel anlegen (Sidebar) …
+  await page.getByPlaceholder("Neues Kapitel …").fill("Grundlagen");
+  await page.getByRole("button", { name: "+" }).click();
+  await expect(page.getByText("1. Grundlagen")).toBeVisible();
+
+  // … dann Frage anlegen (Freie Erinnerung).
   await page.getByRole("button", { name: "Neue Frage" }).click();
-  await page.getByPlaceholder("z. B. Einführung").fill("Grundlagen");
   await page.getByPlaceholder("z. B. Welche Aufgaben hat ein Betriebssystem?").fill("Was ist ein Scheduler?");
   await page
     .locator("div.field", { has: page.locator("label", { hasText: /^Antwort$/ }) })
@@ -37,6 +41,7 @@ test("Kurs anlegen -> Curriculum -> Frage anlegen -> Einstellungen", async ({ pa
   await expect(page.getByText("Frage hinzugefügt.")).toBeVisible();
   await expect(page.getByText("Was ist ein Scheduler?")).toBeVisible();
   await expect(page.getByText("Kapitel 1 · Grundlagen")).toBeVisible();
+  await expect(page.locator(".badge", { hasText: "Freie Erinnerung" }).first()).toBeVisible();
 
   // Einstellungen: Titel ändern.
   await page.getByRole("link", { name: "Einstellungen" }).click();

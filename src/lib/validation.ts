@@ -122,6 +122,9 @@ export const questionSchema = z
     courseId: z.string().min(1).optional(),
     chapter: z.number().int().min(1),
     chapterTitle: z.string().min(1),
+    // Direkte Zuordnung zu einem echten Chapter-Datensatz (Curriculum-
+    // Builder). Gewinnt gegenüber der Ableitung aus chapter/chapterTitle.
+    chapterId: z.string().min(1).optional(),
     question: z.string().min(1),
     answer: z.string().min(1),
     sourceRef: z.string().min(1),
@@ -183,6 +186,27 @@ export const coursePatchSchema = z
       v.order !== undefined,
     { message: "Keine Daten zum Aktualisieren." }
   );
+
+// Kapitel-CRUD für den Curriculum-Builder (Phase E2). Slug wird serverseitig
+// aus dem Titel abgeleitet, falls nicht gesetzt.
+export const chapterCreateSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(2000).optional(),
+});
+
+export const chapterPatchSchema = z
+  .object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(2000).nullable().optional(),
+  })
+  .refine((v) => v.title !== undefined || v.description !== undefined, {
+    message: "Keine Daten zum Aktualisieren.",
+  });
+
+// Reihenfolge-Update: vollständige ID-Liste der Kapitel bzw. Fragen.
+export const reorderSchema = z.object({
+  ids: z.array(z.string().min(1)).min(1),
+});
 
 export const adminUserPatchSchema = z
   .object({

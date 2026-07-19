@@ -123,7 +123,8 @@ Pro (User, Frage) existiert genau ein `Review`-Datensatz mit
   FK auf `Course`, CASCADE), `chapter`/`chapterTitle` (flach, Legacy),
   `chapterId` (nullable FK auf `Chapter`, SET NULL), `question`,
   `answer`, `sourceRef`, `confidence` (`"high" | "low"`),
-  **`taskType` + `payload`** (siehe Task-Typen unten). Wird per
+  **`taskType` + `payload`** (siehe Task-Typen unten), `order`
+  (Reihenfolge innerhalb des Kapitels, seit Migration 0015). Wird per
   `prisma/seed.ts` idempotent geseedt (`upsert`).
 - `Review`: SM-2-Zustand pro User/Question (`easeFactor`,
   `intervalDays`, `repetitions`, `lapses`, `dueAt`, `lastReviewedAt`),

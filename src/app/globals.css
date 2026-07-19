@@ -650,6 +650,13 @@ button {
   }
 }
 
+/* Curriculum-Builder (Editor): zweispaltig auf Desktop, einspaltig mobil */
+@media (max-width: 860px) {
+  .curriculum-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Review (study) */
 .review-question {
   font-size: 24px;

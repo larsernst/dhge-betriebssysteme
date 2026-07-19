@@ -159,17 +159,36 @@ export async function POST(request: Request) {
     const taskFields = toTaskFields(q);
     const payloadValue = taskFields.payload ?? Prisma.JsonNull;
     const courseId = q.courseId ?? null;
-    const chapterId = courseId
-      ? await getChapterId(courseId, q.chapter, q.chapterTitle)
-      : null;
+    // Kapitel-Zuordnung: explizite chapterId gewinnt (muss zum Kurs
+    // gehören); sonst Ableitung aus den flachen Feldern (Legacy-Pfad).
+    let chapterId: string | null = null;
+    let flatChapter = q.chapter;
+    let flatChapterTitle = q.chapterTitle;
+    if (q.chapterId) {
+      const chapter = await prisma.chapter.findUnique({
+        where: { id: q.chapterId },
+        select: { id: true, courseId: true, title: true, order: true },
+      });
+      if (!chapter || chapter.courseId !== courseId) {
+        return NextResponse.json(
+          { error: `Kapitel ${q.chapterId} nicht gefunden (oder gehört zu einem anderen Kurs).` },
+          { status: 400 }
+        );
+      }
+      chapterId = chapter.id;
+      flatChapter = chapter.order;
+      flatChapterTitle = chapter.title;
+    } else if (courseId) {
+      chapterId = await getChapterId(courseId, q.chapter, q.chapterTitle);
+    }
     await prisma.question.upsert({
       where: { id: q.id },
       create: {
         id: q.id,
         courseId,
         chapterId,
-        chapter: q.chapter,
-        chapterTitle: q.chapterTitle,
+        chapter: flatChapter,
+        chapterTitle: flatChapterTitle,
         question: q.question,
         answer: q.answer,
         sourceRef: q.sourceRef,
@@ -180,8 +199,8 @@ export async function POST(request: Request) {
       update: {
         courseId,
         chapterId,
-        chapter: q.chapter,
-        chapterTitle: q.chapterTitle,
+        chapter: flatChapter,
+        chapterTitle: flatChapterTitle,
         question: q.question,
         answer: q.answer,
         sourceRef: q.sourceRef,

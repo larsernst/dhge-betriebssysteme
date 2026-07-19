@@ -17,7 +17,7 @@ export default defineConfig({
     {
       name: "chromium",
       testMatch: /.*\.spec\.ts/,
-      testIgnore: [/admin\.spec\.ts/, /editor\.spec\.ts/],
+      testIgnore: [/admin\.spec\.ts/, /editor\.spec\.ts/, /curriculum\.spec\.ts/],
       use: { browserName: "chromium" },
     },
     // Admin-E2E: zuerst Setup (Admin anlegen + Storage-State), dann die
@@ -45,7 +45,7 @@ export default defineConfig({
     },
     {
       name: "editor-chromium",
-      testMatch: /editor\.spec\.ts/,
+      testMatch: [/editor\.spec\.ts/, /curriculum\.spec\.ts/],
       dependencies: ["editor-setup"],
       use: {
         browserName: "chromium",
