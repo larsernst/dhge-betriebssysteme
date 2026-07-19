@@ -12,11 +12,19 @@ interface CatalogQuestion {
   id: string;           // stabiler Slug, z. B. "2-round-robin"
   chapter: number;      // 1..6
   chapterTitle: string; // z. B. "Prozesse und Threads"
-  question: string;     // bereinigte Frage
-  answer: string;       // Modellantwort aus den Vorlesungsfolien
+  question: string;     // bereinigte Frage (Markdown)
+  answer: string;       // Modellantwort aus den Vorlesungsfolien (Markdown)
   sourceRef: string;    // Dateiname der Quelldatei
+  taskType?: "recall" | "mcq" | "dragdrop" | "cloze" | "order" | "code";
+  payload?: CatalogPayload; // typspezifisch, siehe src/lib/tasks/<type>/payload.ts
+  mcqOptions?: McqOption[]; // Legacy-Schreibweise für MCQ
 }
 ```
+
+Ohne `taskType` leitet der Seed den Typ aus `mcqOptions` ab (Legacy).
+Der Seed validiert jedes `payload` zur Laufzeit gegen das Zod-Schema
+des jeweiligen Task-Bundles und bricht bei ungültigen Einträgen mit
+der Frage-ID ab.
 
 ## Kapitelübersicht
 

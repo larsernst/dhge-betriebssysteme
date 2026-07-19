@@ -64,12 +64,22 @@ heißt erst **nach** Auswahl einer Option „Bestätigen & nächste" bzw.
 „Auswerten" (vorher „Bitte Optionen wählen"). Tests müssen daher zuerst
 eine Option per `.mcq-option input` anhaken und dann den Button klicken.
 
-Voraussetzung: App und Datenbank laufen. Einfach via Docker:
+Voraussetzung: App und Datenbank laufen. Für wiederholbare lokale Läufe
+muss der App-Server mit `DISABLE_RATE_LIMIT=true` gestartet werden
+(sonst scheitern nach mehreren Läufen Login-/Register-Tests am
+Rate-Limit – in der CI ist die Variable gesetzt). Einfach via Docker:
 
 ```bash
 docker compose up --build -d
 # einmal initialisieren lassen, dann:
 BASE_URL=http://<your-host>:<port> npm run test:e2e
+```
+
+Lokal ohne Docker:
+
+```bash
+DISABLE_RATE_LIMIT=true npm run dev   # App-Server
+npm run test:e2e                      # zweites Terminal
 ```
 
 Die Tests verwenden pro Lauf eine eindeutige E-Mail, sodass sie
