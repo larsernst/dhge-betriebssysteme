@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCurrentUserWithRoles } from "@/lib/auth";
 import { isEditor } from "@/lib/roles";
 import { prisma } from "@/lib/prisma";
+import { CourseImage } from "@/components/course-image";
 
 export default async function HomePage() {
   const user = await getCurrentUserWithRoles();
@@ -10,6 +11,16 @@ export default async function HomePage() {
   const courses = await prisma.course.findMany({
     where: { status: "published" },
     orderBy: { order: "asc" },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      description: true,
+      order: true,
+      ownerId: true,
+      status: true,
+      imageMime: true,
+    },
   });
 
   if (!user) {
@@ -101,7 +112,7 @@ export default async function HomePage() {
     }
     const chapters = Array.from(byChapter.values()).sort((a, b) => a.chapter - b.chapter);
     const pct = total === 0 ? 0 : Math.round((learned / total) * 100);
-    return { course: c, total, learned, dueToday, pct, chapters };
+    return { course: c, total, learned, dueToday, pct, chapters, hasImage: c.imageMime !== null };
   });
 
   return (
@@ -147,8 +158,9 @@ export default async function HomePage() {
         </div>
       )}
       <div className="stack">
-        {coursesWithStats.map(({ course, total, learned, dueToday, pct, chapters }) => (
-          <div className="card" key={course.id} style={{ padding: 0 }}>
+        {coursesWithStats.map(({ course, total, learned, dueToday, pct, chapters, hasImage }) => (
+          <div className="card" key={course.id} style={{ padding: 0, overflow: "hidden" }}>
+            <CourseImage courseId={course.id} hasImage={hasImage} title={course.title} height={140} />
             <div style={{ padding: "24px 24px 16px" }}>
               <div className="row row--between" style={{ flexWrap: "wrap", gap: 12 }}>
                 <div>

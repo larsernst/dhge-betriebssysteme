@@ -69,7 +69,13 @@ die fachliche Entscheidung liegt in `src/lib/course-access.ts`:
 Kurs-CRUD läuft über `/api/courses` (Liste/Anlage) und
 `/api/courses/[id]` (Detail/Patch/Löschen), jeweils mit
 Besitzprüfung. Kurse tragen `ownerId` (Seed-Kurse: `NULL` = offiziell)
-und `status` (`draft` | `published`).
+und `status` (`draft` | `published`). Darauf aufbauend:
+`/api/courses/[id]/chapters*` (Curriculum), `/duplicate` (Kopie als
+Entwurf ohne Fortschritte), `/export` (JSON-Download),
+`/import` (Dry-Run mit Fehlerreport, Payload-Validierung,
+`src/lib/course-transfer.ts`) und `/image` (Kursbild-Upload/-
+Auslieferung; `imageMime`+`imageData` in der DB, Magic-Bytes-Prüfung
+in `src/lib/image.ts`).
 
 ## Spaced Repetition (SM-2)
 

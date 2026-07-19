@@ -11,6 +11,7 @@ export interface ResolvedCourse {
   order: number;
   status: string;
   ownerId: string | null;
+  imageMime: string | null;
 }
 
 interface ResolveOptions {

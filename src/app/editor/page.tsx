@@ -17,6 +17,7 @@ export default async function EditorPage() {
       description: true,
       status: true,
       updatedAt: true,
+      imageMime: true,
       _count: { select: { questions: true, chapters: true } },
     },
   });
@@ -39,6 +40,7 @@ export default async function EditorPage() {
           questionCount: c._count.questions,
           chapterCount: c._count.chapters,
           updatedAt: c.updatedAt.toISOString(),
+          hasImage: c.imageMime !== null,
         }))}
       />
     </div>

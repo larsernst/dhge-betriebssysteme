@@ -20,7 +20,9 @@ export default async function EditorKursEinstellungenPage({
       slug: true,
       description: true,
       status: true,
+      order: true,
       ownerId: true,
+      imageMime: true,
       _count: { select: { questions: true } },
     },
   });
@@ -52,7 +54,9 @@ export default async function EditorKursEinstellungenPage({
           slug: course.slug,
           description: course.description,
           status: course.status === "published" ? "published" : "draft",
+          order: course.order,
           questionCount: course._count.questions,
+          hasImage: course.imageMime !== null,
         }}
       />
     </div>
