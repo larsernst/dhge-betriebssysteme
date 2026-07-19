@@ -86,6 +86,7 @@ model Question {
   confidence   String?
   taskType     String?
   payload      Json?
+  order        Int          @default(0)
   createdAt    DateTime      @default(now())
   reviews      Review[]
   events       ReviewEvent[]

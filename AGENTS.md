@@ -26,7 +26,11 @@ BASE_URL=http://<your-host>:<port> npm run test:e2e
   Reihenfolge, published, chapters[]). Neuer Kurs → dort eintragen (inkl.
   Kapiteln) + Fragen in `fragenkatalog.ts` mit entsprechendem `courseId`.
   Kapitel sind seit Migration 0011 eigene DB-Objekte (`Chapter`-Tabelle);
-  der Seed legt sie aus `courses.ts` an.
+  der Seed legt sie aus `courses.ts` an. Im Editor (`/editor/kurs/[id]`)
+  werden Kapitel im Curriculum-Builder verwaltet (CRUD + Reorder über
+  `/api/courses/[id]/chapters*`); Fragen hängen per `chapterId` an
+  Kapiteln und haben seit Migration 0015 ein `order`-Feld für die
+  Reihenfolge innerhalb des Kapitels.
 - Design-Tokens: `src/lib/design-tokens.ts` + `src/app/globals.css`
   (Vorgabe: `DESIGN.md`).
 - Prüfungsmodus: `src/lib/exam.ts` (Fragenauswahl, Bewertung).

@@ -21,17 +21,24 @@ export default async function EditorKursPage({
       description: true,
       status: true,
       ownerId: true,
+      chapters: {
+        orderBy: { order: "asc" },
+        select: { id: true, slug: true, title: true, description: true, order: true },
+      },
       questions: {
-        orderBy: [{ chapter: "asc" }, { id: "asc" }],
+        orderBy: [{ chapter: "asc" }, { order: "asc" }, { id: "asc" }],
         select: {
           id: true,
           chapter: true,
           chapterTitle: true,
+          chapterId: true,
           question: true,
           answer: true,
           sourceRef: true,
           confidence: true,
           taskType: true,
+          payload: true,
+          order: true,
         },
       },
     },
@@ -58,15 +65,25 @@ export default async function EditorKursPage({
           description: course.description,
           status: course.status,
         }}
+        chapters={course.chapters.map((c) => ({
+          id: c.id,
+          slug: c.slug,
+          title: c.title,
+          description: c.description,
+          order: c.order,
+        }))}
         questions={course.questions.map((q) => ({
           id: q.id,
           chapter: q.chapter,
           chapterTitle: q.chapterTitle,
+          chapterId: q.chapterId,
           question: q.question,
           answer: q.answer,
           sourceRef: q.sourceRef,
           confidence: q.confidence,
           taskType: q.taskType as string | null,
+          payload: q.payload,
+          order: q.order,
         }))}
       />
     </div>
