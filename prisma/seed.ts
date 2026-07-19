@@ -19,13 +19,7 @@ async function main() {
         order: c.order,
         status: c.published ? "published" : "draft",
       },
-      update: {
-        slug: c.slug,
-        title: c.title,
-        description: c.description,
-        order: c.order,
-        status: c.published ? "published" : "draft",
-      },
+      update: {},
     });
   }
 
@@ -44,11 +38,7 @@ async function main() {
             description: ch.description ?? null,
             order: ch.order,
           },
-          update: {
-            title: ch.title,
-            description: ch.description ?? null,
-            order: ch.order,
-          },
+          update: {},
         });
       }
     }

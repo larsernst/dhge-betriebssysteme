@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import StudyClient from "./study-client";
 import { prisma } from "@/lib/prisma";
@@ -12,9 +12,9 @@ export default async function LernenPage({
   params: { courseId: string };
   searchParams: { deck?: string; chapter?: string };
 }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
   if (!user) redirect("/login");
-  const course = await resolveCourse(params.courseId);
+  const course = await resolveCourse(params.courseId, { viewer: user });
 
   const now = new Date();
   const deck = searchParams.deck === "difficult" ? "difficult" : "all";

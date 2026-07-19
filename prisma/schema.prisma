@@ -75,7 +75,7 @@ model Chapter {
 model Question {
   id           String        @id
   courseId     String?
-  course       Course?       @relation(fields: [courseId], references: [id])
+  course       Course?       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   chapter      Int
   chapterTitle String
   chapterId    String?

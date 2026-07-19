@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireAdminApi } from "@/lib/auth";
+import { requireEditorApi, isAdmin } from "@/lib/auth";
+import { canEditCourse } from "@/lib/course-access";
 import { z } from "zod";
 
 const patchSchema = z.object({
@@ -9,11 +10,28 @@ const patchSchema = z.object({
   answer: z.string().min(1).optional(),
 });
 
+async function loadQuestionWithCourse(id: string) {
+  const question = await prisma.question.findUnique({
+    where: { id },
+    select: { id: true, courseId: true, course: { select: { id: true, ownerId: true, status: true } } },
+  });
+  return question;
+}
+
+function canEditQuestion(
+  user: { sub: string; roles: string[] },
+  question: { courseId: string | null; course: { id: string; ownerId: string | null; status: string } | null }
+): boolean {
+  if (isAdmin(user)) return true;
+  if (!question.course) return false;
+  return canEditCourse(user, question.course);
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const guard = await requireAdminApi();
+  const guard = await requireEditorApi();
   if (!guard.ok) return guard.response;
 
   const parsed = patchSchema.safeParse(await request.json().catch(() => null));
@@ -27,12 +45,12 @@ export async function PATCH(
     return NextResponse.json({ error: "Keine Daten zum Aktualisieren." }, { status: 400 });
   }
 
-  const existing = await prisma.question.findUnique({
-    where: { id: params.id },
-    select: { id: true },
-  });
+  const existing = await loadQuestionWithCourse(params.id);
   if (!existing) {
     return NextResponse.json({ error: "Frage nicht gefunden." }, { status: 404 });
+  }
+  if (!canEditQuestion(guard.user, existing)) {
+    return NextResponse.json({ error: "Keine Berechtigung." }, { status: 403 });
   }
 
   await prisma.question.update({ where: { id: params.id }, data });
@@ -43,15 +61,15 @@ export async function DELETE(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
-  const guard = await requireAdminApi();
+  const guard = await requireEditorApi();
   if (!guard.ok) return guard.response;
 
-  const existing = await prisma.question.findUnique({
-    where: { id: params.id },
-    select: { id: true },
-  });
+  const existing = await loadQuestionWithCourse(params.id);
   if (!existing) {
     return NextResponse.json({ error: "Frage nicht gefunden." }, { status: 404 });
+  }
+  if (!canEditQuestion(guard.user, existing)) {
+    return NextResponse.json({ error: "Keine Berechtigung." }, { status: 403 });
   }
 
   await prisma.question.delete({ where: { id: params.id } });

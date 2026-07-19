@@ -1,17 +1,10 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireEditorApi, isAdmin } from "@/lib/auth";
 import { courseCreateSchema } from "@/lib/validation";
+import { slugify } from "@/lib/slug";
 import type { CourseStatus } from "@/lib/course-access";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
 
 async function uniqueSlug(base: string): Promise<string> {
   let slug = base || "kurs";
@@ -64,25 +57,32 @@ export async function POST(request: Request) {
   const status: CourseStatus = parsed.data.status ?? "draft";
   const maxOrder = await prisma.course.aggregate({ _max: { order: true } });
 
-  const course = await prisma.course.create({
-    data: {
-      id: `course-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-      slug,
-      title: parsed.data.title,
-      description: parsed.data.description ?? "",
-      order: (maxOrder._max.order ?? 0) + 1,
-      ownerId: guard.user.sub,
-      status,
-    },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      description: true,
-      order: true,
-      status: true,
-      ownerId: true,
-    },
-  });
-  return NextResponse.json({ course });
+  try {
+    const course = await prisma.course.create({
+      data: {
+        id: `course-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        slug,
+        title: parsed.data.title,
+        description: parsed.data.description ?? "",
+        order: (maxOrder._max.order ?? 0) + 1,
+        ownerId: guard.user.sub,
+        status,
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        description: true,
+        order: true,
+        status: true,
+        ownerId: true,
+      },
+    });
+    return NextResponse.json({ course }, { status: 201 });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+      return NextResponse.json({ error: "Slug wird bereits verwendet." }, { status: 409 });
+    }
+    throw e;
+  }
 }

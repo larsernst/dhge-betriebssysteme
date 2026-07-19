@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getMatureThresholdDays } from "@/lib/settings";
@@ -11,9 +11,9 @@ export default async function CourseOverviewPage({
 }: {
   params: { courseId: string };
 }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
   if (!user) redirect("/login");
-  const course = await resolveCourse(params.courseId);
+  const course = await resolveCourse(params.courseId, { viewer: user });
   const now = new Date();
 
   const questions = await prisma.question.findMany({
@@ -57,7 +57,14 @@ export default async function CourseOverviewPage({
           ← Alle Kurse
         </Link>
       </p>
-      <h1 style={{ marginTop: 8 }}>{course.title}</h1>
+      <h1 style={{ marginTop: 8 }}>
+        {course.title}
+        {course.status === "draft" && (
+          <span className="badge badge--warn" style={{ marginLeft: 12, verticalAlign: "middle" }}>
+            Entwurf
+          </span>
+        )}
+      </h1>
       <p className="muted" style={{ maxWidth: 720 }}>
         {course.description}
       </p>

@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUserWithRoles } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -11,9 +11,9 @@ export default async function CramPage({
 }: {
   params: { courseId: string; id: string };
 }) {
-  const user = await getCurrentUser();
+  const user = await getCurrentUserWithRoles();
   if (!user) redirect("/login");
-  const course = await resolveCourse(params.courseId);
+  const course = await resolveCourse(params.courseId, { viewer: user });
 
   const q = await prisma.question.findUnique({ where: { id: params.id } });
   if (!q || q.courseId !== course.id) notFound();
