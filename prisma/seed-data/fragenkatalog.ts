@@ -4,6 +4,30 @@
 // Datensicherung, Kapitel 6 gesamt). Die Quelle jeder Antwort ist in
 // `sourceRef` angegeben.
 
+import type { McqPayload } from "../../src/lib/tasks/mcq/payload";
+import type { DragDropPayload } from "../../src/lib/tasks/dragdrop/payload";
+import type { ClozePayload } from "../../src/lib/tasks/cloze/payload";
+import type { OrderPayload } from "../../src/lib/tasks/order/payload";
+import type { CodePayload } from "../../src/lib/tasks/code/payload";
+
+export type CatalogTaskType =
+  | "recall"
+  | "mcq"
+  | "dragdrop"
+  | "cloze"
+  | "order"
+  | "code";
+
+// Typsichere Payloads je Aufgabentyp (Autoren-Form, inkl. Lösungen).
+// Der Seed validiert jeden Eintrag zusätzlich zur Laufzeit gegen das
+// Zod-Schema des jeweiligen Task-Bundles.
+export type CatalogPayload =
+  | McqPayload
+  | DragDropPayload
+  | ClozePayload
+  | OrderPayload
+  | CodePayload;
+
 export interface CatalogQuestion {
   id: string;
   courseId?: string;
@@ -13,12 +37,12 @@ export interface CatalogQuestion {
   answer: string;
   sourceRef: string;
   confidence?: "high" | "low";
-  // Neu (Migration 0010): expliziter Task-Typ + typspezifischer Payload.
-  // taskType: "recall" | "mcq" | (später: dragdrop | cloze | order | code)
-  // Für recall ist payload null; für mcq { options: McqOption[] }.
+  // Expliziter Task-Typ + typspezifischer Payload (Migration 0010).
+  // Für recall ist payload null; für mcq { options: McqOption[] };
+  // für dragdrop/cloze/order/code das jeweilige Bundle-Payload.
   // Wenn nicht gesetzt, leitet der Seed taskType aus mcqOptions ab (Legacy).
-  taskType?: "recall" | "mcq";
-  payload?: unknown;
+  taskType?: CatalogTaskType;
+  payload?: CatalogPayload;
   // Legacy: wird beibehalten, bis die Cleanup-Migration mcqOptions entfernt.
   mcqOptions?: McqOption[];
 }

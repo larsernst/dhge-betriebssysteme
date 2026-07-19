@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { FRAGENKATALOG } from "./seed-data/fragenkatalog";
 import { COURSES } from "./seed-data/courses";
+import { TASK_REGISTRY, isTaskType } from "../src/lib/tasks/registry";
 
 const prisma = new PrismaClient();
 
@@ -58,6 +59,17 @@ async function main() {
         : hasMcq
         ? { options: q.mcqOptions }
         : null;
+    // Payload zur Laufzeit gegen das Zod-Schema des Task-Bundles validieren,
+    // damit fehlerhafte Katalog-Einträge nicht unbemerkt in der DB landen.
+    if (!isTaskType(taskType)) {
+      throw new Error(`Frage ${q.id}: unbekannter taskType "${taskType}"`);
+    }
+    const parsed = TASK_REGISTRY[taskType].payloadSchema.safeParse(payload);
+    if (!parsed.success) {
+      throw new Error(
+        `Frage ${q.id}: ungültiges payload für taskType "${taskType}": ${parsed.error.message}`
+      );
+    }
     await prisma.question.upsert({
       where: { id: q.id },
       create: {
