@@ -5,6 +5,7 @@ import { getMatureThresholdDays } from "@/lib/settings";
 import Link from "next/link";
 import { KursNav } from "./kurs-nav";
 import { resolveCourse } from "./resolve-course";
+import { CourseImage } from "@/components/course-image";
 
 export default async function CourseOverviewPage({
   params,
@@ -57,6 +58,9 @@ export default async function CourseOverviewPage({
           ← Alle Kurse
         </Link>
       </p>
+      <div style={{ marginTop: 8, marginBottom: 16 }}>
+        <CourseImage courseId={course.id} hasImage={course.imageMime !== null} title={course.title} height={180} />
+      </div>
       <h1 style={{ marginTop: 8 }}>
         {course.title}
         {course.status === "draft" && (

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { CourseImage } from "@/components/course-image";
 
 type CourseCard = {
   id: string;
@@ -13,6 +14,7 @@ type CourseCard = {
   questionCount: number;
   chapterCount: number;
   updatedAt: string;
+  hasImage: boolean;
 };
 
 export default function EditorDashboardClient({ courses }: { courses: CourseCard[] }) {
@@ -64,7 +66,9 @@ export default function EditorDashboardClient({ courses }: { courses: CourseCard
 
       <div className="grid grid--3">
         {courses.map((c) => (
-          <div className="card" key={c.id} style={{ padding: 20 }}>
+          <div className="card" key={c.id} style={{ padding: 0, overflow: "hidden" }}>
+            <CourseImage courseId={c.id} hasImage={c.hasImage} title={c.title} height={110} />
+            <div style={{ padding: 20 }}>
             <div className="row" style={{ gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
               <span
                 className={`badge ${c.status === "published" ? "badge--success" : "badge--muted"}`}
@@ -105,6 +109,7 @@ export default function EditorDashboardClient({ courses }: { courses: CourseCard
               >
                 Einstellungen
               </Link>
+            </div>
             </div>
           </div>
         ))}
