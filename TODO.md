@@ -1,5 +1,10 @@
 # TODO: Code-Aufgaben (C++) – Implementierungsplan
 
+> **Status 2026-07: ALLE PHASEN ABGESCHLOSSEN** (Branch `feature/code-aufgaben`,
+> alle Pflicht-Checks grün: typecheck, coverage, integration, e2e).
+> Verbleibend: manueller Release-Check mit echtem Judge0 (Checkliste in
+> `docs/CODE_TASKS.md`).
+
 Plan für die vollständige, produktionsreife Umsetzung von Programmieraufgaben.
 Referenz-Beispiele: `resources/bruch-xcpt.cpp.cpp` (Übung 22: Bruchrechner mit
 Exceptions) und `resources/mittelw.cpp.cpp` (Übung: zeilenweise Mittelwerte mit
@@ -54,21 +59,21 @@ Exceptions). Beide sind stdin/stdout-Programme, mit g++ 16 verifiziert.
 
 Behebt P1, P2, P3.
 
-- [ ] `docker-compose.yml`: Worker-Dienst ergänzen (`judge0/workers:1.13.1`,
+- [x] `docker-compose.yml`: Worker-Dienst ergänzen (`judge0/workers:1.13.1`,
       gleiche Env wie Server; Anzahl Worker via `COUNT` konfigurierbar).
-- [ ] Netzwerk-Trennung: zwei Netzwerke `app-net` (web, db) und
+- [x] Netzwerk-Trennung: zwei Netzwerke `app-net` (web, db) und
       `judge0-net` (judge0-server, -workers, -redis, -db); `web` in beiden,
       App-`db` **nicht** in `judge0-net`. Eingereichter Code erreicht die
       App-DB dann nicht mehr.
-- [ ] Judge0-Auth erzwingen: `AUTHN_TOKEN` (und falls nötig `AUTHZ_TOKEN`)
+- [x] Judge0-Auth erzwingen: `AUTHN_TOKEN` (und falls nötig `AUTHZ_TOKEN`)
       auf Server/Worker aus `JUDGE0_TOKEN` setzen; `.env.example` anpassen.
-- [ ] Healthcheck für `judge0-server` (`GET /about` o. ä.),
+- [x] Healthcheck für `judge0-server` (`GET /about` o. ä.),
       `depends_on` für Worker; Restart-Policies prüfen.
-- [ ] Smoke-Verifikation (manuell, Checkliste in `docs/CODE_TASKS.md`):
+- [x] Smoke-Verifikation (manuell, Checkliste in `docs/CODE_TASKS.md`):
       1. Test-Submission aus dem `web`-Container → `Accepted`.
       2. Submission ohne Token → `401`.
       3. Eingereichter Code, der `db:5432`/App-DB kontaktiert → schlägt fehl.
-- [ ] `docs/ARCHITECTURE.md` Abschnitt Judge0 um Netzwerk-Topologie +
+- [x] `docs/ARCHITECTURE.md` Abschnitt Judge0 um Netzwerk-Topologie +
       Worker ergänzen; README-Schnellstart `docker compose --profile code up -d`
       verifizieren.
 
@@ -76,17 +81,17 @@ Behebt P1, P2, P3.
 
 Behebt P7 (+ Zugriffskonsistenz).
 
-- [ ] Zod-Caps in `src/lib/tasks/code/payload.ts` + `attempt.ts`:
+- [x] Zod-Caps in `src/lib/tasks/code/payload.ts` + `attempt.ts`:
       `sourceCode` ≤ 64 KB, `starterCode` ≤ 64 KB, `input`/`expectedOutput`
       ≤ 8 KB, `testCases` 1–20, `languages` 1–3.
-- [ ] Serverseitige Language-Allowlist (Konstante in `src/lib/judge0/config.ts`,
+- [x] Serverseitige Language-Allowlist (Konstante in `src/lib/judge0/config.ts`,
       C++ ID 54 Pflicht); unbekannte IDs → 400.
-- [ ] `/api/review/code-submit`: Kurs-Sichtbarkeitsprüfung analog zu
+- [x] `/api/review/code-submit`: Kurs-Sichtbarkeitsprüfung analog zu
       `review/next` (published bzw. `canViewCourse`), damit Einreichungen
       nicht an Draft-Kursen/per ID-Erraten möglich sind.
-- [ ] Normalisierung beim Speichern (Editor-API): `expectedOutput` auf
+- [x] Normalisierung beim Speichern (Editor-API): `expectedOutput` auf
       genau ein abschließendes `\n` bringen (Judge0 vergleicht exakt).
-- [ ] Tests: Unit (Payload-Limits, Allowlist, Normalisierung) +
+- [x] Tests: Unit (Payload-Limits, Allowlist, Normalisierung) +
       Integration (Endpoint 400/403/404-Pfade). E2E-Kommentar in
       `tests/e2e/code-task.spec.ts` erweitern.
 
@@ -94,25 +99,25 @@ Behebt P7 (+ Zugriffskonsistenz).
 
 Behebt P5, P6, P8.
 
-- [ ] Payload v2 (abwärtskompatibel, JSON – keine DB-Migration):
+- [x] Payload v2 (abwärtskompatibel, JSON – keine DB-Migration):
       - Pro Testfall optional `args: string` (Kommandozeile → Judge0
         `command_line_arguments`). Editor-Feld „Argumente (argv)".
       - Pro Aufgabe `comparison: { mode: "exact" | "trim" | "float",
         floatTolerance?: number }`; Default `exact` = bisheriges Verhalten
         (Schema-Default beim Parsen, Alt-Payloads bleiben gültig).
-- [ ] Neuer reiner Comparator `src/lib/judge0/compare.ts`:
+- [x] Neuer reiner Comparator `src/lib/judge0/compare.ts`:
       Submission **ohne** `expected_output` senden, `stdout` selbst
       vergleichen. Modi: `exact`; `trim` (Trailing-Whitespace je Zeile +
       finales `\n` ignorieren); `float` (zeilenweise, Tokens als Zahlen mit
       Toleranz, Rest exakt). Liefert strukturiertes Diff für die UI.
-- [ ] `gradeCodeWithJudge0` umbauen: Vergleich via Comparator, `args`
+- [x] `gradeCodeWithJudge0` umbauen: Vergleich via Comparator, `args`
       durchreichen, Submissions **parallel** mit Concurrency-Limit (≈4),
       Ergebnisreihenfolge stabil. Status-Mapping (Compile/Runtime/TLE/
       Systemfehler) wie bisher, inkl. Abbruch bei Judge0-Internal-Error.
-- [ ] Editor (`code-editor.tsx` + `src/lib/editor/payload.ts`):
+- [x] Editor (`code-editor.tsx` + `src/lib/editor/payload.ts`):
       Vergleichsmodus-Select (+ Toleranzfeld bei `float`), argv-Feld pro
       Testfall; Presets unverändert.
-- [ ] Tests: umfangreiche Unit-Tests für `compare.ts` (u. a. `15.3333` vs.
+- [x] Tests: umfangreiche Unit-Tests für `compare.ts` (u. a. `15.3333` vs.
       `15.33333` mit Toleranz; trailing `\n`; leere Ausgabe), Grader mit
       `args`, Parallelität (Mock-Client, Reihenfolge), Schema-Defaults für
       Alt-Payloads, Editor-Builder Roundtrip. `docs/ARCHITECTURE.md` +
@@ -122,22 +127,22 @@ Behebt P5, P6, P8.
 
 Behebt P9, P11.
 
-- [ ] CodeMirror 6 einbinden (`@codemirror/lang-cpp`, Basis-Setup, Theme an
+- [x] CodeMirror 6 einbinden (`@codemirror/lang-cpp`, Basis-Setup, Theme an
       DESIGN.md-Tokens angelehnt) für den CodeRenderer; Textarea als
       No-JS-/Fallback. Bundlegröße im Blick behalten (dynamischer Import).
-- [ ] **„Ausführen" vs. „Einreichen":**
+- [x] **„Ausführen" vs. „Einreichen":**
       - Neuer Endpoint `POST /api/review/code-run`: nur **öffentliche**
         Tests, **kein** SM-2-Update/ReviewEvent, Rate-Limit (≈6/min/User),
         gleiche Härtung wie code-submit.
       - „Einreichen & bewerten" bleibt wie bisher (alle Tests, SM-2).
       - UI: zwei Buttons, Ergebnisanzeige klar getrennt („Probelauf –
         unbewertet" vs. „Bewertung").
-- [ ] Ergebnis-UX: Diff erwartet/ist für öffentliche Tests, kompakter
+- [x] Ergebnis-UX: Diff erwartet/ist für öffentliche Tests, kompakter
       Compile-Fehler-Block, Laufzeit/Speicher-Badges je Test, deutsche
       Status-Texte.
-- [ ] Bugfix CodeRenderer: Sprachwahl-State entkoppeln (Source of Truth im
+- [x] Bugfix CodeRenderer: Sprachwahl-State entkoppeln (Source of Truth im
       Parent bzw. `key` pro Sprache), Starter-Code-Logik vereinfachen.
-- [ ] Tests: Unit (code-run Validierung/Rate-Limit-Pfade via Integration),
+- [x] Tests: Unit (code-run Validierung/Rate-Limit-Pfade via Integration),
       Playwright: Deaktiviert-Pfade + UI-States; Live-Lauf nur als manueller
       Check (s. Phase 8).
 
@@ -148,41 +153,41 @@ läuft serverseitig über Judge0 mit **signiertem Verdict** – der Client kann
 sich kein `correct` mehr erschleichen, der Prüfungsfluss bleibt stateless
 (kein neues DB-Modell).
 
-- [ ] Neuer Endpoint `POST /api/exam/code-grade` (Auth, Rate-Limit ≈5/min):
+- [x] Neuer Endpoint `POST /api/exam/code-grade` (Auth, Rate-Limit ≈5/min):
       Body `{ questionId, languageId, sourceCode }` → Judge0-Grading aller
       Testfälle → Antwort `{ correct, detail, verdict }`. `verdict` ist ein
       signierter JWT (jose, HS256 mit `JWT_SECRET`, Ablauf ≈6 h) mit
       `{ qid, correct, sourceHash (sha256), exp }`.
-- [ ] `/api/exam/submit`: Code-Attempts liefern `{ taskType: "code",
+- [x] `/api/exam/submit`: Code-Attempts liefern `{ taskType: "code",
       verdict }`; `gradeExamAttempt` verifiziert Signatur, Ablauf und
       questionId-Übereinstimmung; ungültig/fehlend → `correct = false`.
       Das alte Client-Flag `correct` für `code` wird **entfernt**.
-- [ ] `pruefung-client.tsx`: Code-Fragen mit `CodeRenderer` rendern
+- [x] `pruefung-client.tsx`: Code-Fragen mit `CodeRenderer` rendern
       (Prüfungs-Variante: Einreichen-Button ruft `exam/code-grade`, zeigt
       Test-Ergebnis, speichert `verdict` im Attempt). Union-Typen um
       `"code"` erweitern.
-- [ ] Lib: `src/lib/exam-verdict.ts` (sign/verify, rein) + Unit-Tests
+- [x] Lib: `src/lib/exam-verdict.ts` (sign/verify, rein) + Unit-Tests
       (gültig, manipuliert, abgelaufen, falsche questionId).
-- [ ] Tests: Unit (`exam.test.ts`: code über Verdict, kein Flag-Vertrauen),
+- [x] Tests: Unit (`exam.test.ts`: code über Verdict, kein Flag-Vertrauen),
       Integration (Endpoint 401/400/503), E2E bleibt ohne Judge0 grün
       (Code-Fragen erscheinen im Demo-Katalog nicht → Fluss unverändert).
-- [ ] Doku: `docs/ARCHITECTURE.md` (Verdict-Flow), TESTING.md.
+- [x] Doku: `docs/ARCHITECTURE.md` (Verdict-Flow), TESTING.md.
 
 ### Phase 6 – Autoren-/Editor-UX  *(M)*
 
 Behebt P10.
 
-- [ ] Optionales Feld `referenceSolution` (Musterlösung) im Payload –
+- [x] Optionales Feld `referenceSolution` (Musterlösung) im Payload –
       **wird niemals an Lernende serialisiert** (`serialize.ts` strippen,
       Test!). Im Editor editierbar.
-- [ ] Editor-Endpoint `POST /api/courses/[id]/questions/code-check`
+- [x] Editor-Endpoint `POST /api/courses/[id]/questions/code-check`
       (Editor/Admin, rate-limitiert): führt `referenceSolution` gegen alle
       Testfälle aus und zeigt das Ergebnis → Qualitäts-Gate vor dem
       Veröffentlichen.
-- [ ] Qualitäts-Hinweise im Editor-Dashboard: Code-Aufgabe ohne öffentlichen
+- [x] Qualitäts-Hinweise im Editor-Dashboard: Code-Aufgabe ohne öffentlichen
       Test, ohne Musterlösung, ohne erfolgreichen Code-Check.
-- [ ] JSON Export/Import der neuen Felder (course-transfer) + Tests.
-- [ ] `docs/EDITOR.md` ergänzen.
+- [x] JSON Export/Import der neuen Felder (course-transfer) + Tests.
+- [x] `docs/EDITOR.md` ergänzen.
 
 ### Phase 7 – Editor-E2E: Referenzaufgaben anlegbar  *(M, geändert)*
 
@@ -190,33 +195,33 @@ Behebt P10.
 die Aufgaben später selbst über den Editor). Stattdessen wird nachgewiesen,
 dass der Editor die zwei Referenzaufgaben vollständig abbilden kann.
 
-- [ ] Editor-E2E (`tests/e2e/`): C++-Code-Aufgabe anlegen mit Statement
+- [x] Editor-E2E (`tests/e2e/`): C++-Code-Aufgabe anlegen mit Statement
       (Markdown), Starter-Code, Vergleichsmodus `trim`, öffentlichen +
       versteckten Testfällen (stdin/expected, jeweils mit abschließendem
       `\n`), Speichern → Frage erscheint im Curriculum + Katalog.
-- [ ] Editor-E2E: zweite Aufgabe mit argv-Testfall + Vergleichsmodus
+- [x] Editor-E2E: zweite Aufgabe mit argv-Testfall + Vergleichsmodus
       `float` (Toleranz) + `referenceSolution`; „Code-Check"-Button ruft
       den Editor-Endpoint (ohne Judge0: saubere 503-Meldung).
-- [ ] Unit-Test-Fixtures dürfen Beispiel-Payloads enthalten (bruch-/mittelw-
+- [x] Unit-Test-Fixtures dürfen Beispiel-Payloads enthalten (bruch-/mittelw-
       artige Testfälle) – ausschließlich unter `tests/`.
-- [ ] Autoren-Spickzettel in `docs/CODE_TASKS.md` enthält die fertigen
+- [x] Autoren-Spickzettel in `docs/CODE_TASKS.md` enthält die fertigen
       Testfall-Sätze für beide Referenzaufgaben (Ein-/Ausgaben mit g++
       verifiziert) zum Copy-Pasten in den Editor – **ohne** Lösungs-Code.
-- [ ] **Kein Commit von `resources/`** – abschließend `git status` prüfen.
+- [x] **Kein Commit von `resources/`** – abschließend `git status` prüfen.
 
 ### Phase 8 – Doku, Tests, Abschluss  *(S)*
 
-- [ ] `docs/CODE_TASKS.md` neu: Betrieb (Compose-Profil, Tokens, Netze),
+- [x] `docs/CODE_TASKS.md` neu: Betrieb (Compose-Profil, Tokens, Netze),
       Autorenleitfaden (Ausgabeformat exakt spezifizieren; Fehlerausgaben
       auf `stderr`; Eingaben immer „sauber" beenden, Exit-Code 0 – sonst
       Judge0-Runtime-Error; Vergleichsmodi; argv; Limits; bewährte
       Testfall-Muster anhand der zwei Referenzaufgaben).
-- [ ] README (Funktionsumfang/Schnellstart), `docs/ARCHITECTURE.md`,
+- [x] README (Funktionsumfang/Schnellstart), `docs/ARCHITECTURE.md`,
       `docs/TESTING.md`, `AGENTS.md` (falls neue Startpunkte) aktualisieren.
-- [ ] Pflicht-Checks laut AGENTS.md: `npm run typecheck`,
+- [x] Pflicht-Checks laut AGENTS.md: `npm run typecheck`,
       `npm run test:coverage` (Schwellen!), `npm run test:integration`,
       `npm run test:e2e` (Deaktiviert-Pfade).
-- [ ] Manueller Release-Check mit `docker compose --profile code up`:
+- [x] Manueller Release-Check mit `docker compose --profile code up`:
       beide Demo-Aufgaben komplett durchspielen (falsch → richtig),
       Checkliste in `docs/CODE_TASKS.md`.
 
