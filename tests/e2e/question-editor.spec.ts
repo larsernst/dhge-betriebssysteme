@@ -85,7 +85,7 @@ test("Cloze-Editor: Wort markieren -> Lücke, Vorschau, Speichern", async ({ pag
 
   // Vorschau: richtige Antwort eingeben -> "Richtig"
   await page.getByRole("button", { name: "Als Lernender testen" }).click();
-  await page.locator(".preview-card input.input").first().fill("vier");
+  await page.locator(".card--dashed input.input").first().fill("vier");
   await page.getByRole("button", { name: /Prüfen|Auswerten|Überprüfen/ }).first().click();
 
   await page.getByRole("button", { name: "Frage speichern" }).click();
