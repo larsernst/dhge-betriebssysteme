@@ -194,7 +194,7 @@ export default function CourseSettingsClient({ course }: { course: CourseSetting
   return (
     <div className="stack">
       {error && (
-        <div className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+        <div className="badge badge--danger">
           {error}
         </div>
       )}
@@ -360,7 +360,7 @@ export default function CourseSettingsClient({ course }: { course: CourseSetting
         {importing && <p className="muted" style={{ fontSize: 13 }}>Prüfe Import …</p>}
         {importReport.state === "errors" && (
           <div className="stack" style={{ gap: 4 }}>
-            <strong style={{ color: "#ae2e24", fontSize: 14 }}>
+            <strong style={{ color: "var(--ds-text-danger)", fontSize: 14 }}>
               {importReport.errors.length} Problem(e) gefunden – nichts importiert:
             </strong>
             {importReport.errors.slice(0, 10).map((err, i) => (
@@ -391,8 +391,8 @@ export default function CourseSettingsClient({ course }: { course: CourseSetting
         )}
       </div>
 
-      <div className="card" style={{ padding: 20, borderColor: "#ae2e24" }}>
-        <h3 style={{ marginTop: 0, color: "#ae2e24" }}>Gefahrenzone</h3>
+      <div className="card" style={{ padding: 20, borderColor: "var(--ds-text-danger)" }}>
+        <h3 style={{ marginTop: 0, color: "var(--ds-text-danger)" }}>Gefahrenzone</h3>
         <p className="muted" style={{ fontSize: 14 }}>
           Kurs löschen entfernt {course.questionCount > 0 ? `alle ${course.questionCount} Fragen, ` : ""}
           Kapitel und Nutzerfortschritte unwiderruflich.

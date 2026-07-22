@@ -99,7 +99,7 @@ export function DragDropEditor({
   }
   return (
     <div className="stack">
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 16 }} className="dd-editor-grid">
+      <div className="dd-editor-grid">
         <div className="stack" style={{ gap: 8 }}>
           <strong style={{ fontSize: 14 }}>Zonen (Kategorien)</strong>
           {value.zones.map((z, idx) => (

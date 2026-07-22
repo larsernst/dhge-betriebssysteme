@@ -119,7 +119,7 @@ export default function NutzerClient() {
   return (
     <div className="stack">
       {error && (
-        <div className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+        <div className="badge badge--danger">
           {error}
         </div>
       )}

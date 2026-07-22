@@ -513,7 +513,7 @@ export default function CurriculumClient({
                 onDrop={() => dropChapter(ch.id)}
                 onDragEnd={() => setDragChapterId(null)}
                 style={{
-                  border: `1px solid ${ch.id === activeId ? "var(--ds-brand, #1868db)" : "var(--ds-border)"}`,
+                  border: `1px solid ${ch.id === activeId ? "var(--ds-brand)" : "var(--ds-border)"}`,
                   borderRadius: "var(--ds-radius)",
                   padding: "8px 10px",
                   cursor: "pointer",
@@ -573,7 +573,7 @@ export default function CurriculumClient({
             {unassignedCount > 0 && (
               <div
                 style={{
-                  border: `1px dashed ${activeChapter === UNASSIGNED ? "var(--ds-brand, #1868db)" : "var(--ds-border)"}`,
+                  border: `1px dashed ${activeChapter === UNASSIGNED ? "var(--ds-brand)" : "var(--ds-border)"}`,
                   borderRadius: "var(--ds-radius)",
                   padding: "8px 10px",
                   cursor: "pointer",
@@ -769,7 +769,7 @@ function Notice({ error, success }: { error: string | null; success: string | nu
   return (
     <>
       {error && (
-        <div className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+        <div className="badge badge--danger">
           {error}
         </div>
       )}

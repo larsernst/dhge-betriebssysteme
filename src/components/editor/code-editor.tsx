@@ -190,7 +190,7 @@ export function CodeEditor({
           )}
         </div>
         {checkError && (
-          <p className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24", fontSize: 12 }}>
+          <p className="badge badge--danger" style={{ fontSize: 12 }}>
             {checkError}
           </p>
         )}

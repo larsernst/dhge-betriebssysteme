@@ -263,7 +263,7 @@ export default function PruefungClient({ courseId }: { courseId: string }) {
     return (
       <div className="card">
         {error && (
-          <p className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+          <p className="badge badge--danger">
             {error}
           </p>
         )}
@@ -494,7 +494,7 @@ export default function PruefungClient({ courseId }: { courseId: string }) {
           </>
         )}
         {error && (
-          <p className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+          <p className="badge badge--danger">
             {error}
           </p>
         )}

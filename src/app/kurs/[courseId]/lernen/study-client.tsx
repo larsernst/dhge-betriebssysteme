@@ -318,7 +318,7 @@ export default function StudyClient({
   if (error) {
     return (
       <div className="card">
-        <p className="badge" style={{ background: "rgba(174,46,36,0.1)", color: "#ae2e24" }}>
+        <p className="badge badge--danger">
           {error}
         </p>
         <button className="btn btn--secondary" onClick={() => loadNext()}>

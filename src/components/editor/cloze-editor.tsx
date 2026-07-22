@@ -84,7 +84,7 @@ export function ClozeEditor({
             <div
               key={b.blankId}
               className="card"
-              style={{ padding: 12, borderLeft: "3px solid var(--ds-brand, #1868db)" }}
+              style={{ padding: 12, borderLeft: "3px solid var(--ds-brand)" }}
             >
               <div className="row" style={{ gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 <span className="badge">[[{b.blankId}]]</span>
