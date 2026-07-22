@@ -60,7 +60,7 @@ export default async function FortschrittPage({
   const perChapter = Array.from(perChapterMap.values()).sort((a, b) => a.chapter - b.chapter);
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <p className="eyebrow">{course.title} · Lernfortschritt</p>
       <h1>Dein Stand</h1>
       <KursNav courseId={course.id} />

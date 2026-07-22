@@ -6,11 +6,11 @@ import { requireAdminPage } from "@/lib/auth";
 export default async function AdminIndexPage() {
   await requireAdminPage();
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">Verwaltung</p>
       <h1>Admin</h1>
       <div className="row" style={{ gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-        <a className="navlink" href="/admin" style={{ fontWeight: 600 }}>
+        <a className="navlink navlink--active" href="/admin">
           Admin
         </a>
         <a className="navlink" href="/editor">Editor</a>

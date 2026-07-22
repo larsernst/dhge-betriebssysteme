@@ -19,7 +19,7 @@ export default async function CramPage({
   if (!q || q.courseId !== course.id) notFound();
 
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">{course.title} · Vorschau (ohne Bewertung)</p>
       <div className="row row--between" style={{ flexWrap: "wrap" }}>
         <h1 style={{ fontSize: 24 }}>Kapitel {q.chapter} · {q.chapterTitle}</h1>

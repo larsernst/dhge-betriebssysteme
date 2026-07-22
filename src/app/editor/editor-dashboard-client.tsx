@@ -67,7 +67,7 @@ export default function EditorDashboardClient({ courses }: { courses: CourseCard
       )}
 
       {courses.length === 0 && !showForm && (
-        <div className="card" style={{ padding: 24, textAlign: "center" }}>
+        <div className="card center" style={{ padding: 24 }}>
           <h3 style={{ marginTop: 0 }}>Noch keine Kurse</h3>
           <p className="muted">
             Lege deinen ersten Kurs an und fülle ihn mit Kapiteln und Fragen.
@@ -147,13 +147,10 @@ export default function EditorDashboardClient({ courses }: { courses: CourseCard
         {!showForm && (
           <button
             type="button"
-            className="card"
+            className="card card--dashed center"
             style={{
               padding: 20,
               cursor: "pointer",
-              border: "1px dashed var(--ds-border)",
-              background: "transparent",
-              textAlign: "center",
               font: "inherit",
             }}
             onClick={() => setShowForm(true)}

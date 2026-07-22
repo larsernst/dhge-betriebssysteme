@@ -27,7 +27,7 @@ export default async function EditorPage() {
   });
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <p className="eyebrow">Editor</p>
       <h1>{admin ? "Alle Kurse" : "Meine Kurse"}</h1>
       <p className="muted" style={{ maxWidth: 640 }}>

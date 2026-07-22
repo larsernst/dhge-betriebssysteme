@@ -5,6 +5,7 @@ import { buildHeatmap, buildLapsesLeaderboard, computeStreak, toDayKey } from "@
 import Link from "next/link";
 import { KursNav } from "../kurs-nav";
 import { resolveCourse } from "../resolve-course";
+import Stat from "@/components/stat";
 
 export default async function StatistikPage({
   params,
@@ -51,7 +52,7 @@ export default async function StatistikPage({
   }
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <p className="eyebrow">{course.title} · Statistik</p>
       <h1>Deine Lern-Statistik</h1>
       <KursNav courseId={course.id} />
@@ -79,7 +80,7 @@ export default async function StatistikPage({
                 return (
                   <div
                     key={b.date}
-                    className={`heatmap__cell heatmap__cell--${intensity}`}
+                    className={intensity === 0 ? "heatmap__cell" : `heatmap__cell heatmap__cell--${intensity}`}
                     title={`${b.date}: ${b.count} Wiederholung(en)`}
                   />
                 );
@@ -118,26 +119,6 @@ export default async function StatistikPage({
           </Link>
         </p>
       </section>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  accent,
-}: {
-  label: string;
-  value: string;
-  accent?: "brand";
-}) {
-  const cls = accent === "brand" ? "card card--brand" : "card";
-  return (
-    <div className={cls}>
-      <p className="eyebrow" style={accent === "brand" ? { color: "rgba(255,255,255,0.8)" } : undefined}>
-        {label}
-      </p>
-      <p style={{ fontSize: 32, fontWeight: 600, margin: 0 }}>{value}</p>
     </div>
   );
 }

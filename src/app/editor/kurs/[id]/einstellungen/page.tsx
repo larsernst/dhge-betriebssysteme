@@ -32,7 +32,7 @@ export default async function EditorKursEinstellungenPage({
   }
 
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">
         <Link href="/editor" style={{ color: "inherit", textDecoration: "none" }}>
           Editor

@@ -289,13 +289,11 @@ export default function PruefungClient({ courseId }: { courseId: string }) {
     return (
       <div className="stack">
         <div className="card card--brand">
-          <p className="eyebrow" style={{ color: "rgba(255,255,255,0.8)" }}>
-            Ergebnis
-          </p>
-          <p style={{ fontSize: 40, fontWeight: 600, margin: 0 }}>
+          <p className="eyebrow">Ergebnis</p>
+          <p className="stat__value">
             {result.score} / {result.total}
           </p>
-          <p style={{ color: "rgba(255,255,255,0.85)" }}>{pct}% richtig</p>
+          <p className="muted">{pct}% richtig</p>
         </div>
 
         {!result.savedToSm2 && (

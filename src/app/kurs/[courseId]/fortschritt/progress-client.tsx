@@ -30,7 +30,7 @@ export default function ProgressClient({
       <div className="grid grid--3">
         <div className="card">
           <p className="eyebrow">Gelernt</p>
-          <h2 style={{ marginBottom: 8 }}>{learnedPct}%</h2>
+          <p className="stat__value" style={{ marginBottom: 8 }}>{learnedPct}%</p>
           <div className="progress">
             <div className="progress__bar" style={{ width: `${learnedPct}%` }} />
           </div>
@@ -39,17 +39,15 @@ export default function ProgressClient({
           </p>
         </div>
         <div className="card card--brand">
-          <p className="eyebrow" style={{ color: "rgba(255,255,255,0.8)" }}>
-            Heute fällig
-          </p>
-          <h2 style={{ color: "var(--ds-ink-on-dark)", marginBottom: 8 }}>{stats.dueToday}</h2>
-          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 14 }}>
+          <p className="eyebrow">Heute fällig</p>
+          <p className="stat__value" style={{ marginBottom: 8 }}>{stats.dueToday}</p>
+          <p className="muted" style={{ fontSize: 14 }}>
             Wiederholungen nach SM-2
           </p>
         </div>
         <div className="card">
           <p className="eyebrow">Gefestigt</p>
-          <h2 style={{ marginBottom: 8 }}>{stats.mature}</h2>
+          <p className="stat__value" style={{ marginBottom: 8 }}>{stats.mature}</p>
           <p className="muted" style={{ fontSize: 14 }}>
             Fragen mit Intervalldauer ≥ 21 Tage
           </p>
@@ -86,9 +84,7 @@ export default function ProgressClient({
       <hr className="divider" />
 
       <div className="card card--dark">
-        <p className="eyebrow" style={{ color: "rgba(255,255,255,0.7)" }}>
-          Statistik
-        </p>
+        <p className="eyebrow">Statistik</p>
         <p>
           Insgesamt <strong>{stats.totalLapses}</strong> Versehen („Again") über alle
           Wiederholungen. Spaced Repetition zeigt schwierige Karten häufiger – das ist

@@ -24,9 +24,7 @@ export function ThemeToggle() {
       aria-label={dark ? "Helles Design aktivieren" : "Dunkles Design aktivieren"}
       title={dark ? "Hell" : "Dunkel"}
     >
-      <span className="theme-toggle__icon" aria-hidden="true">
-        {dark ? "◑" : "◐"}
-      </span>
+      <span aria-hidden="true">{dark ? "◑" : "◐"}</span>
     </button>
   );
 }

@@ -6,6 +6,7 @@ import { getMatureThresholdDays } from "@/lib/settings";
 import Link from "next/link";
 import { KursNav } from "../kurs-nav";
 import { resolveCourse } from "../resolve-course";
+import Stat from "@/components/stat";
 
 type Status = "neu" | "faellig" | "gelernt" | "gefestigt";
 
@@ -99,7 +100,7 @@ export default async function KatalogPage({
   const chapters = Array.from(byChapter.values()).sort((a, b) => a.chapter - b.chapter);
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <div className="row row--between" style={{ flexWrap: "wrap", gap: 16 }}>
         <div>
           <p className="eyebrow">{course.title} · Fragenkatalog</p>
@@ -178,27 +179,6 @@ export default async function KatalogPage({
           </section>
         );
       })}
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  accent,
-}: {
-  label: string;
-  value: number;
-  accent?: "brand" | "warn" | "success";
-}) {
-  const cls =
-    accent === "brand" ? "card card--brand" : accent === "success" ? "card" : "card";
-  return (
-    <div className={cls}>
-      <p className="eyebrow" style={accent === "brand" ? { color: "rgba(255,255,255,0.8)" } : undefined}>
-        {label}
-      </p>
-      <p style={{ fontSize: 32, fontWeight: 600, margin: 0 }}>{value}</p>
     </div>
   );
 }

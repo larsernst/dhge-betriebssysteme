@@ -397,7 +397,7 @@ export default function CourseSettingsClient({ course }: { course: CourseSetting
           Kurs löschen entfernt {course.questionCount > 0 ? `alle ${course.questionCount} Fragen, ` : ""}
           Kapitel und Nutzerfortschritte unwiderruflich.
         </p>
-        <button type="button" className="btn btn--secondary btn--sm" onClick={deleteCourse}>
+        <button type="button" className="btn btn--danger btn--sm" onClick={deleteCourse}>
           Kurs endgültig löschen
         </button>
       </div>

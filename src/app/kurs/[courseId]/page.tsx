@@ -6,6 +6,7 @@ import Link from "next/link";
 import { KursNav } from "./kurs-nav";
 import { resolveCourse } from "./resolve-course";
 import { CourseImage } from "@/components/course-image";
+import Stat from "@/components/stat";
 
 export default async function CourseOverviewPage({
   params,
@@ -52,7 +53,7 @@ export default async function CourseOverviewPage({
   const chapters = Array.from(byChapter.values()).sort((a, b) => a.chapter - b.chapter);
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <p className="muted">
         <Link href="/" className="muted">
           ← Alle Kurse
@@ -126,39 +127,6 @@ export default async function CourseOverviewPage({
           );
         })}
       </div>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  sub,
-  accent,
-}: {
-  label: string;
-  value: number | string;
-  sub?: string;
-  accent?: "brand" | "warn" | "success";
-}) {
-  const cls = accent === "brand" ? "card card--brand" : "card";
-  return (
-    <div className={cls}>
-      <p
-        className="eyebrow"
-        style={accent === "brand" ? { color: "rgba(255,255,255,0.8)" } : undefined}
-      >
-        {label}
-      </p>
-      <p style={{ fontSize: 32, fontWeight: 600, margin: 0 }}>{value}</p>
-      {sub && (
-        <p
-          className="muted"
-          style={{ fontSize: 14, marginTop: 4, ...(accent === "brand" ? { color: "rgba(255,255,255,0.85)" } : {}) }}
-        >
-          {sub}
-        </p>
-      )}
     </div>
   );
 }

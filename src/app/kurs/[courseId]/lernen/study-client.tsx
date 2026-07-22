@@ -376,7 +376,7 @@ export default function StudyClient({
       </div>
 
       {reviewLearned && (
-        <p className="eyebrow" style={{ textAlign: "center" }}>
+        <p className="eyebrow center">
           Wiederholung gelernter Fragen
         </p>
       )}
@@ -471,9 +471,8 @@ export default function StudyClient({
 
       {feedback && (
         <p
-          className="muted"
+          className="muted center"
           style={{
-            textAlign: "center",
             color:
               feedback.kind === "mcq"
                 ? feedback.correct

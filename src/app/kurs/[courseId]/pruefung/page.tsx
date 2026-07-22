@@ -14,7 +14,7 @@ export default async function PruefungPage({
   const course = await resolveCourse(params.courseId, { viewer: user });
 
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">{course.title} · Prüfungssimulation</p>
       <h1>Prüfung proben</h1>
       <KursNav courseId={course.id} />

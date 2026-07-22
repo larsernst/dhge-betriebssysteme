@@ -15,7 +15,7 @@ export default async function EinstellungenPage() {
   if (!me) redirect("/login");
 
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">Einstellungen</p>
       <h1>Mein Konto</h1>
       <div className="card">

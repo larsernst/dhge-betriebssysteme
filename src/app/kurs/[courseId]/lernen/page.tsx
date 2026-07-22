@@ -45,7 +45,7 @@ export default async function LernenPage({
       : "Heute wiederholen";
 
   return (
-    <div className="page page--narrow" style={{ paddingTop: 64 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">{course.title} · Lern-Sitzung</p>
       <h1>
         {heading}

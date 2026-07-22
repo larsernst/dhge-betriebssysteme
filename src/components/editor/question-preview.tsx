@@ -76,7 +76,7 @@ export function QuestionPreview({
   const orderCorrect = taskType === "order" ? (payload as OrderPayload)?.correctOrder ?? null : null;
 
   return (
-    <div className="card preview-card" style={{ padding: 16, borderStyle: "dashed" }}>
+    <div className="card card--dashed" style={{ padding: 16 }}>
       <div className="row row--between" style={{ alignItems: "center", flexWrap: "wrap" }}>
         <span className="eyebrow" style={{ fontSize: 11 }}>Vorschau (Lernenden-Sicht)</span>
         {result !== null && (

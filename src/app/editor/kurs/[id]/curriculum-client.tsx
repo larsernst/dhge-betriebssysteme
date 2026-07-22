@@ -552,16 +552,16 @@ export default function CurriculumClient({
                       </span>
                     </div>
                     <div className="row" style={{ gap: 2, marginTop: 4 }} onClick={(e) => e.stopPropagation()}>
-                      <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} disabled={idx === 0} onClick={() => moveChapter(ch.id, -1)} title="Nach oben">
+                      <button type="button" className="btn btn--ghost btn--icon" disabled={idx === 0} onClick={() => moveChapter(ch.id, -1)} title="Nach oben">
                         ↑
                       </button>
-                      <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} disabled={idx === sortedChapters.length - 1} onClick={() => moveChapter(ch.id, 1)} title="Nach unten">
+                      <button type="button" className="btn btn--ghost btn--icon" disabled={idx === sortedChapters.length - 1} onClick={() => moveChapter(ch.id, 1)} title="Nach unten">
                         ↓
                       </button>
-                      <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} onClick={() => { setRenamingId(ch.id); setRenameTitle(ch.title); }} title="Umbenennen">
+                      <button type="button" className="btn btn--ghost btn--icon" onClick={() => { setRenamingId(ch.id); setRenameTitle(ch.title); }} title="Umbenennen">
                         ✎
                       </button>
-                      <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} onClick={() => void deleteChapter(ch)} title="Löschen">
+                      <button type="button" className="btn btn--ghost btn--icon" onClick={() => void deleteChapter(ch)} title="Löschen">
                         ✕
                       </button>
                     </div>
@@ -732,7 +732,7 @@ export default function CurriculumClient({
           )}
 
           {!activeChapterData && activeQuestions.length === 0 && sortedChapters.length === 0 && (
-            <div className="card" style={{ padding: 20, textAlign: "center" }}>
+            <div className="card center" style={{ padding: 20 }}>
               <p className="muted" style={{ margin: 0 }}>
                 Lege links dein erstes Kapitel an – danach kannst du Fragen hinzufügen.
               </p>
@@ -835,10 +835,10 @@ function QuestionRow({
         </div>
         <div className="stack" style={{ gap: 6, alignItems: "flex-end" }}>
           <div className="row" style={{ gap: 4, flexWrap: "wrap" }}>
-            <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} disabled={isFirst} onClick={() => onReorder(-1)} title="Nach oben">
+            <button type="button" className="btn btn--ghost btn--icon" disabled={isFirst} onClick={() => onReorder(-1)} title="Nach oben">
               ↑
             </button>
-            <button type="button" className="btn btn--ghost btn--sm" style={{ padding: "0 6px" }} disabled={isLast} onClick={() => onReorder(1)} title="Nach unten">
+            <button type="button" className="btn btn--ghost btn--icon" disabled={isLast} onClick={() => onReorder(1)} title="Nach unten">
               ↓
             </button>
             <button type="button" className="btn btn--ghost btn--sm" onClick={() => onStartEdit(q)}>
@@ -847,7 +847,7 @@ function QuestionRow({
             <button type="button" className="btn btn--ghost btn--sm" onClick={onDuplicate} title="Duplizieren">
               ⧉
             </button>
-            <button type="button" className="btn btn--ghost btn--sm" onClick={onDelete}>
+            <button type="button" className="btn btn--ghost-danger btn--sm" onClick={onDelete}>
               Löschen
             </button>
           </div>

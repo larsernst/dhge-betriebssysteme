@@ -49,7 +49,7 @@ export default async function EditorKursPage({
   }
 
   return (
-    <div className="page page--wide" style={{ paddingTop: 56 }}>
+    <div className="page page--wide">
       <p className="eyebrow">
         <Link href="/editor" style={{ color: "inherit", textDecoration: "none" }}>
           Editor

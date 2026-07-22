@@ -292,7 +292,7 @@ function UserRow({
           <button type="button" className="btn btn--ghost btn--sm" onClick={onEdit}>
             Bearbeiten
           </button>
-          <button type="button" className="btn btn--ghost btn--sm" onClick={onDelete}>
+          <button type="button" className="btn btn--ghost-danger btn--sm" onClick={onDelete}>
             Löschen
           </button>
         </div>

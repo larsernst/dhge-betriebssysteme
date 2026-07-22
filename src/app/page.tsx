@@ -116,7 +116,7 @@ export default async function HomePage() {
   });
 
   return (
-    <div className="page" style={{ paddingTop: 64 }}>
+    <div className="page">
       <p className="eyebrow">Übersicht</p>
       <div className="row row--between" style={{ flexWrap: "wrap", gap: 16 }}>
         <h1 style={{ margin: 0 }}>Hallo, {user.name.split(" ")[0]}!</h1>

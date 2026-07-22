@@ -2,7 +2,7 @@ import RegisterForm from "./register-form";
 
 export default function RegisterPage() {
   return (
-    <div className="page page--narrow" style={{ paddingTop: 80 }}>
+    <div className="page page--narrow">
       <p className="eyebrow">Konto erstellen</p>
       <h1>Registrieren</h1>
       <p className="muted">
