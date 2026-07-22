@@ -77,7 +77,7 @@ export default function EditorDashboardClient({ courses }: { courses: CourseCard
 
       <div className="grid grid--3">
         {courses.map((c) => (
-          <div className="card" key={c.id} style={{ padding: 0, overflow: "hidden" }}>
+          <div className="card card--media" key={c.id}>
             <CourseImage courseId={c.id} hasImage={c.hasImage} title={c.title} height={110} />
             <div style={{ padding: 20 }}>
             <div className="row" style={{ gap: 6, marginBottom: 8, flexWrap: "wrap" }}>

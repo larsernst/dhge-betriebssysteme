@@ -183,8 +183,8 @@ button {
 /* Curriculum-Builder: Arbeitsfläche mit sticky Kapitel-Spalte */
 .curriculum-sidebar {
   position: sticky;
-  top: 84px;
-  max-height: calc(100vh - 100px);
+  top: 88px;
+  max-height: calc(100vh - 104px);
   overflow-y: auto;
 }
 
@@ -203,7 +203,7 @@ button {
 
 .editor-modal {
   background: var(--ds-surface, #fff);
-  border-radius: var(--ds-radius);
+  border-radius: var(--ds-radius-lg);
   border: 1px solid var(--ds-border);
   box-shadow: 0 12px 40px rgba(9, 30, 66, 0.25);
   width: 100%;
@@ -236,7 +236,7 @@ body.editor-modal-open {
 .topnav {
   background: var(--ds-surface);
   border-bottom: 1px solid var(--ds-border);
-  height: 56px;
+  height: 72px;
   display: flex;
   align-items: center;
   padding: 0 var(--ds-space-lg);
@@ -363,11 +363,11 @@ body.editor-modal-open {
   border: 0;
   border-radius: var(--ds-radius-full);
   padding: 14px 26px;
-  font-size: 18px;
+  font-size: 20px;
   font-family: var(--ds-font-text);
   text-decoration: none;
   cursor: pointer;
-  min-height: 48px;
+  min-height: 58px;
 }
 
 .btn--primary {
@@ -404,8 +404,8 @@ body.editor-modal-open {
 .card {
   background: var(--ds-surface);
   border: 1px solid var(--ds-border);
-  border-radius: var(--ds-radius-md);
-  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-space-xl);
 }
 
 .card--brand {
@@ -738,7 +738,7 @@ body.editor-modal-open {
 }
 
 .tab {
-  padding: 8px 20px;
+  padding: 8px 32px;
   border-radius: var(--ds-radius-full);
   border: 0;
   background: var(--ds-background-canvas);
@@ -1074,7 +1074,7 @@ body.editor-modal-open {
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
-  top: 56px;
+  top: 72px;
   background: rgba(0, 0, 0, 0.5);
   z-index: 49;
 }
@@ -1178,7 +1178,6 @@ body.editor-modal-open {
 
   .card {
     padding: var(--ds-space-md);
-    border-radius: var(--ds-radius-md);
   }
 
   .btn {

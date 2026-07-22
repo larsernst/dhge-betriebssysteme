@@ -17,7 +17,7 @@ export function CourseImage({
         aria-hidden
         style={{
           height,
-          borderRadius: "var(--ds-radius) var(--ds-radius) 0 0",
+          borderRadius: "var(--ds-radius-lg) var(--ds-radius-lg) 0 0",
           background: "linear-gradient(135deg, color-mix(in srgb, var(--ds-brand) 14%, transparent), color-mix(in srgb, var(--ds-brand) 4%, transparent))",
           borderBottom: "1px solid var(--ds-border)",
         }}
@@ -34,7 +34,7 @@ export function CourseImage({
         height,
         objectFit: "cover",
         display: "block",
-        borderRadius: "var(--ds-radius) var(--ds-radius) 0 0",
+        borderRadius: "var(--ds-radius-lg) var(--ds-radius-lg) 0 0",
         borderBottom: "1px solid var(--ds-border)",
       }}
     />

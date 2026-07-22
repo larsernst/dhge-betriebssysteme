@@ -159,7 +159,7 @@ export default async function HomePage() {
       )}
       <div className="stack">
         {coursesWithStats.map(({ course, total, learned, dueToday, pct, chapters, hasImage }) => (
-          <div className="card" key={course.id} style={{ padding: 0, overflow: "hidden" }}>
+          <div className="card card--media" key={course.id}>
             <CourseImage courseId={course.id} hasImage={hasImage} title={course.title} height={140} />
             <div style={{ padding: "24px 24px 16px" }}>
               <div className="row row--between" style={{ flexWrap: "wrap", gap: 12 }}>
