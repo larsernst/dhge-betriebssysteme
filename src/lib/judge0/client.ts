@@ -9,8 +9,25 @@
 // https://github.com/judge0/judge0/blob/master/EXTRA_API.md#submissions
 //   1=In Queue, 2=Processing, 3=Accepted, 4=Wrong Answer, 5=Time Limit Exceeded,
 //   6=Compilation Error, 7-12=Runtime-Fehler, 13=Internal Error.
+//
+// Transport: base64_encoded=true. Judge0 1.13.1 decodiert Attribute ohne
+// force_encoding (app/services/base64_service.rb) – im Plain-Modus schlägt
+// das Rendern jeder Submission fehl, deren stdout/stderr Nicht-ASCII-Zeichen
+// enthält (z. B. deutsche Umlaute in Programmausgaben). Mit Base64 sind
+// beliebige Bytes kein Problem. Wir kodieren daher alle Text-Felder beim
+// Senden und dekodieren stdout/stderr/compile_output beim Empfangen.
 
 const TERMINAL_STATES = new Set([3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+
+function b64encode(value: string): string {
+  return Buffer.from(value, "utf8").toString("base64");
+}
+
+function b64decode(value: string | null | undefined): string | null | undefined {
+  if (value === null || value === undefined) return value;
+  // Judge0 liefert Base64 mit Zeilenumbrüchen (encode64) – Buffer toleriert das.
+  return Buffer.from(value, "base64").toString("utf8");
+}
 
 export interface Judge0Submission {
   language_id: number;
@@ -57,25 +74,44 @@ export interface Judge0ClientOptions {
   pollIntervalMs?: number;
 }
 
+function decodeResult(result: Judge0Result): Judge0Result {
+  return {
+    ...result,
+    stdout: b64decode(result.stdout),
+    stderr: b64decode(result.stderr),
+    compile_output: b64decode(result.compile_output),
+  };
+}
+
 export function createJudge0Client(opts: Judge0ClientOptions): Judge0Client {
   const fetchImpl = opts.fetchImpl ?? fetch;
   const maxAttempts = opts.maxAttempts ?? 30;
   const pollIntervalMs = opts.pollIntervalMs ?? 1000;
 
   async function submit(submission: Judge0Submission): Promise<Judge0Result> {
-    const res = await fetchImpl(`${opts.baseUrl}/submissions?base64_encoded=false&wait=true`, {
+    const encoded: Record<string, unknown> = {
+      ...submission,
+      source_code: b64encode(submission.source_code),
+      ...CGROUP_V2_COMPAT,
+    };
+    if (submission.stdin !== undefined) encoded.stdin = b64encode(submission.stdin);
+    if (submission.expected_output !== undefined)
+      encoded.expected_output = b64encode(submission.expected_output);
+    if (submission.command_line_arguments !== undefined)
+      encoded.command_line_arguments = b64encode(submission.command_line_arguments);
+    const res = await fetchImpl(`${opts.baseUrl}/submissions?base64_encoded=true&wait=true`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "X-Auth-Token": opts.token,
       },
-      body: JSON.stringify({ ...submission, ...CGROUP_V2_COMPAT }),
+      body: JSON.stringify(encoded),
     });
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       throw new Error(`Judge0 POST fehlgeschlagen (${res.status}): ${text}`);
     }
-    const result = (await res.json()) as Judge0Result;
+    const result = decodeResult((await res.json()) as Judge0Result);
     return poll(result);
   }
 
@@ -87,11 +123,11 @@ export function createJudge0Client(opts: Judge0ClientOptions): Judge0Client {
       await new Promise((r) => setTimeout(r, pollIntervalMs));
       if (!current.token) break;
       const res = await fetchImpl(
-        `${opts.baseUrl}/submissions/${current.token}?base64_encoded=false`,
+        `${opts.baseUrl}/submissions/${current.token}?base64_encoded=true`,
         { headers: { "X-Auth-Token": opts.token } }
       );
       if (!res.ok) break;
-      current = (await res.json()) as Judge0Result;
+      current = decodeResult((await res.json()) as Judge0Result);
     }
     return current;
   }
